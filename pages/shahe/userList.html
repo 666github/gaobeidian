@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>用户列表</title>
+    <link type="text/css" rel="stylesheet" href="/style/public/classly.css"/>
+    <link type="text/css" rel="stylesheet" href="/style/public/public.css"/>
+    <link type="text/css" rel="stylesheet" href="/style/fontIcon/font-awesome/css/font-awesome.min.css"/>
+    <link type="text/css" rel="stylesheet" href="/pages/safetyManagement/index/css/jquery.selectbox.statistic.css" />
+    <link type="text/css" rel="stylesheet" href="css/user.css"/>
+    <link type="text/css" rel="stylesheet" href="/javascript/plugin/animateCss/animate.min.css"/>
+    <link type="text/css" rel="stylesheet" href="/javascript/plugin/datetimepicker/jquery.datetimepicker.css"/>
+    <script type="text/javascript" src="/javascript/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="../../javascript/plugin/store/store.legacy.min.js"></script>
+    <script type="text/javascript" src="/javascript/public/public.js"></script>
+    <script type="text/javascript" src="../../javascript/plugin/websocket/MyWebSocket.js"></script>
+    <script type="text/javascript" src="../../javascript/public/webpublic.js"></script>
+    <script type="text/javascript" src="/javascript/plugin/selectbox/jquery.selectbox.js"></script>
+    <script type="text/javascript" src="js/user.js"></script>
+    <script type="text/javascript" src="js/statisticEcharts.min.js"></script>
+    <script type="text/javascript" src="/javascript/plugin/datetimepicker/jquery.datetimepicker.js"></script>
+</head>
+<body>
+    <div class="boxBG webmain">
+        <div class="pageApp">
+            <div class="loadingStatus hide">
+            </div>
+            <div class="alertDiv hide">
+                <div class="alertContent">
+                    <p class="alertMsg"></p>
+                    <input type="button" value="确定" onclick="$('.alertDiv').fadeOut();" />
+                </div>
+            </div>
+            <div class="confirmDiv hide">
+                <div class="alertContent">
+                    <p class="alertMsg"></p>
+                    <input type="button" value="确定" onclick="returnConfirm(1);" />
+                    <input type="button" value="取消" onclick="returnConfirm(0);" />
+                </div>
+            </div>
+            <div class="boxClose">
+                <div class="boxCloseImg">
+                </div>
+            </div>
+            <div class="boxTitleFrame">
+                <div class="titleBox">
+                    <div class="titleBoxLeft">
+                    </div>
+                    <div class="titleBoxValue">
+                        用户列表</div>
+                </div>
+            </div>
+            <div class="orderByNavFrame">
+                <!--<div class="titleBox">请选择筛选条件</div>-->
+            </div>
+            <div class="chartFrame showMask">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>
+                                用户名
+                            </th>
+                            <th>
+                                姓名
+                            </th>
+                            <th>
+                                操作
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+                <div class="list">
+                    <table>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

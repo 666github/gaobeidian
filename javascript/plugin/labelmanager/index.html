@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<script language="javascript" src="../../jquery/jquery.min.js"></script>
+<link rel="stylesheet" href="/mooccss/template/classly.css" />
+<link rel="stylesheet" type="text/css" href="/mooccss/template/public.css">
+<link rel="stylesheet" type="text/css" href="labelmanager.css">
+<script language="javascript" src="labelmanager.js"></script>
+<script language="javascript" src="/moocjs/web/public.js"></script>
+</head>
+<script>
+$(function(){
+	var labelMangager=new LabelManager();
+	labelMangager.setAddCallback(function(_returnCallback){
+		var addLabelBox=this;
+		var text=addLabelBox.getValue();
+		setTimeout(function(){
+			_returnCallback(text,111);
+		},5000);
+	});
+	labelMangager.setDelCallback(function(_returnCallback){
+		var labelnode=this;
+		var id=labelnode.getConfig();
+		console.log(id);
+		setTimeout(function(){
+			_returnCallback();
+		},5000);
+	});
+	labelMangager.appendTo(".taglabel_manage");
+	labelMangager.addLabel("啥的",1);
+	labelMangager.addLabel("阿斯顿撒旦安抚",2);
+	labelMangager.addLabel("上大夫撒旦法",3);
+	labelMangager.addLabel("对方是个王企鹅",4);
+	labelMangager.setLabelMaxCount(5);
+	labelMangager.setInputMaxCount(20);
+	
+	
+	var labelMangager2=new LabelManager();
+	labelMangager2.appendTo(".taglabel_manage2");
+	labelMangager2.addLabel("啥的阿萨德啥的 d",1);
+	labelMangager2.addLabel("阿萨德",2);
+	labelMangager2.addLabel("答上啥的阿萨德",3);
+	labelMangager2.addLabel("撒第三代阿萨德啥的",4);
+	labelMangager2.setLabelMaxCount(5);
+	labelMangager2.setInputMaxCount(10);
+	$(".tishi").bind("click",function(){
+		var data=labelMangager2.getData();
+		var text=[];
+		for(var i=0; i<data.length;i++){
+			text.push(data[i].id);
+		}
+		alert(text.join(","));
+	})
+})
+
+</script>
+<body>
+	<div class="taglabel_manage p20"></div>
+	<div class="taglabel_manage2 p20"></div>
+    <div class="p20"><button class="tishi button" >确定</button></div>
+</body>
+</html>

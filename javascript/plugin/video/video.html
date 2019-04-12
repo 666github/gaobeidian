@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>视频播放测试</title>
+<script language="javascript" src="../../jquery/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="video.css" />
+<script language="javascript" src="video.js"></script>
+</head>
+<style type="text/css">
+body{
+	margin:0px;
+	padding:0px;
+	font-size:14px;
+}
+.video_frame{position:absolute;}
+.add_video_point{
+	background-color:#F10004;
+}
+.add_video_point_blue{
+	background-color:#0060D6;
+}
+</style>
+<script>
+$(function(){
+	var video =new Video({
+		currentSrc:"http://101.200.173.136:38080/file/video/edc57dd251dd4d3087e4e19eecdc3f0b.mp4",
+		autoplay:false,
+		callback:{
+			playEvent:function(_time,_totalTime){
+				//开始播放
+			},
+			pauseEvent:function(_time,_totalTime){
+				//暂停播放
+			},
+			timeUpdateEvent:function(_time,_totalTime){
+				//视频时间更新
+			},
+			secondUpdateEvent:function(_time,_totalTime){
+				//以秒为单位的进度
+			},
+			endedEvent:function(_time,_totalTime){
+				//结束播放
+			},
+			errorEvent:function(_errorCode,_errorMessage,_error){
+				//遇到错误
+			},
+			volumeEvent:function(_volume,_maxVolume){
+				//音量改变
+			},
+			dragStopEvent:function(_time,_totalTime){
+				$("#videotrace").text("拖拽停止时间：" + _time);
+				//this.pause();//可以设置暂停
+				//拖拽结束（当参数controlsDisable为true此回调函数有效）
+			}
+		},
+		autoplay:false,//自动播放
+		preload:true,		//预加载
+		controls:false,		
+		videoList:[			//视频列表
+			{name:"超清",value:"http://101.200.173.136:38080/file/video/edc57dd251dd4d3087e4e19eecdc3f0b.mp4"},
+			{name:"高清",value:"http://101.200.173.136:38080/file/video/edc57dd251dd4d3087e4e19eecdc3f0b.mp4"},
+			{name:"清晰",value:"http://101.200.173.136:38080/file/video/edc57dd251dd4d3087e4e19eecdc3f0b.mp4"},
+			{name:"流畅",value:"http://101.200.173.136:38080/file/video/edc57dd251dd4d3087e4e19eecdc3f0b.mp4"}
+		],
+		autoHideControls:true,//自动隐藏控制条
+		controlsDisable:true,//是否允许控制
+		spend:1,//速度
+		startTime:0,
+		spendList:[//速度选项列表
+			{name:"1.0x",value:1.0},
+			{name:"1.5x",value:1.5},
+			{name:"2.0x",value:2.0}
+		],
+		currentSrc:"",
+		volume:1
+	});
+	video.appendTo("#videoobj");
+	
+	function pointCallback(_type,_pointDom,_time){
+		// _type  有两种值  playto  和  click
+		//this 指向 播放器对象
+		//_pointDome 添加上的点的 dom
+		//_time传递的时间
+		if(_type==="click"){
+			if(console){console.log("当前点击的点：" +_time)};
+		}else if(_type==="playto"){
+			if(console){console.log("播放到了点：" +_time)};
+			this.pause();//暂停播放
+		}
+		if($(_pointDom).hasClass("add_video_point")){
+			//判断是什么类型的点
+		}else if($(_pointDom).hasClass("add_video_point_blue")){
+			//判断是什么类型的点
+		}
+		return true;//直接跳到点上，如果返回false则点击不会跳转到这个点的时间上
+	} 
+	
+	//添加一个点
+	var point1=video.addPoint(120,"add_video_point",pointCallback);
+	var point2=video.addPoint(80,"add_video_point_blue",pointCallback);//通过class可以定义一个 10x10的小图标，区分不同的点
+	//删除点
+	//video.delPoint(120);//删除120的这个点
+	//video.delPoint(point2);//删除第二个点
+	
+})
+</script>
+<body>
+
+<div id="videoobj" style="width:800px; height:450px; background:#000000; margin:0 auto; position:relative;"></div>
+<div style="text-align:center; line-height:35px;" id="videotrace"></div>
+
+</body>
+</html>

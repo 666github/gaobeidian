@@ -1,0 +1,453 @@
+@charset "utf-8";
+/* CSS Document */
+body{
+	background:rgba(0,0,0,0);
+}
+.webmain{
+	position:fixed;
+	right: 10px;
+	bottom: 10px;
+	top:10px;
+	left: 10px;
+	background-color: #25394a;
+	box-shadow: rgba(0,0,0,0.6) 0 0 10px;
+}
+.loadingStatus{
+	position: absolute;
+	z-index: 8888;
+	width: 100%;
+	height: 100%;
+	background: url(/images/public/loadingBox.gif) no-repeat center rgba(0,0,0,0.3);
+}
+.boxBG{
+	background-image: url(../images/boxbg.png);
+	background-position: top center;
+	background-repeat: repeat-x;
+}
+.boxCloseImg{
+	width:15px;
+	height: 15px;
+	margin: 10px auto;
+	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAcElEQVQokY2SSw6AMAhEiVeoF6nnlyvYIz0XrQnyiZJ0w8xLM4AAHTiBBkjx2vJ0AZRZo4AacC2PPo1RQNY8gGYFDwUzIP5rCwWzBzyU5tokFknPqHXAdBBfoQP0Z6wvzS9uJ1/cA6kwT0MLs4UUOG4X9r6X1qMqWgAAAABJRU5ErkJggg=="); 
+	background-repeat: no-repeat;
+	background-position: center;
+	-webkit-transition: all 100ms ease-in;
+	-o-transition: all 100ms ease-in;
+	transition: all 100ms ease-in;
+}
+.boxClose{
+	background-color: #ce0027;
+	width: 40px;
+	height: 39px;
+	line-height:39px;
+	cursor: pointer;
+	text-align: center;
+	position: absolute;
+	z-index: 100;
+	right: 0;
+	top: 0;
+}
+.boxClose:hover{
+	background-color:#b20022;
+}
+.boxClose:hover .boxCloseImg{
+	-webkit-transform:rotate(90deg);
+	-ms-transform:rotate(90deg);
+	-o-transform:rotate(90deg);
+	transform:rotate(90deg);
+}
+.boxTitleFrame{
+	position: relative;
+	z-index: 99;
+}
+.boxTitleFrame .titleBox{
+	height: 60px;
+	width: 180px;
+	position: absolute;
+	left: 0;
+	top: 0;
+	background: rgba(0,0,0,0.2);
+}
+.boxTitleFrame .titleBoxLeft{
+	position: absolute;
+	left: 50%;
+	top: 15px;
+	margin-left: -35px;
+	width:70px;
+    height:70px;
+	background: url(../images/jiancha.png) no-repeat center;
+	display:none;
+}
+.orderByNavFrame .titleBox{
+    position:relative;
+    height:60;
+	line-height: 60px;
+	padding-left: 10px;
+	color: #fff;
+	opacity: 0.5;
+}
+.boxTitleFrame .titleBoxValue{
+    position:absolute;
+	background: #0098ce;
+	text-align: center;
+	left: 0px;
+	height: 60px;
+	line-height: 60px;
+	color: #ffffff;
+	right: 0px;
+	bottom: 0px;
+	font-size:16px;
+	font-weight: bold;
+}
+.orderByNavFrame{
+	position:absolute;
+	height: 60px;
+	left: 180px;
+	right: 0;
+	top: 0px;
+	background: rgba(0,0,0,0.1);
+	border-bottom: #5b6f80 solid 1px;
+}
+.orderByNavFrame .searchBoxButtonFrame{
+	position:relative;
+	height: 35px;
+	padding-left: 10px;
+	width: 100%;
+}
+.searchBoxButtonFrame .startDateTimeInput{
+	float:left;
+	height: 35px;
+	width: 160px;
+	line-height: 33px;
+	position: relative;
+}
+.searchBoxButtonFrame .endDateTimeInput{
+	float:left;
+	height: 35px;
+	width: 160px;
+	line-height: 33px;
+	border-left: solid 1px #25394a;
+	position: relative;
+}
+.searchBoxButtonFrame .startDateTimeInput input{
+	background: #142533;
+	height: 35px;
+	line-height: 33px;
+	width: 100%;
+	border-top-left-radius: 5px;
+	border-bottom-left-radius: 5px;
+	padding: 0 10px;
+	color: #aebbc6;
+}
+.searchBoxButtonFrame .endDateTimeInput input{
+	background: #142533;
+	height: 35px;
+	line-height: 33px;
+	width: 100%;
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+	padding: 0 10px;
+	color: #aebbc6;
+}
+.searchBoxButtonFrame .searchBoxButton{
+	float:left;
+	margin-left: 10px;
+	height: 35px;
+	width: 35px;
+	line-height: 35px;
+	text-align: center;
+	cursor: pointer;
+	color: #aebbc6;
+	background: #142533;
+	border-radius: 5px;
+}
+.searchBoxButton .searchBoxButton:hover{
+	color: #ffffff;
+}
+.searchBoxButton .startDateTimeInput{
+	float:left;
+	height: 35px;
+	width: 150px;
+	line-height: 32px;
+}
+.orderByNavBox{
+	position: relative;
+	height: 40px;
+	left: 10px;
+	right: 10px;
+	top:10px;
+}
+.orderByNavForHouseManager .selectbox{
+	width: 160px;
+	height: 35px;
+	line-height: 35px;
+	display:none;
+}
+.orderByNavSelect{
+	width:400px;
+	height: 35px;
+	display: table;
+	position: absolute;
+	left:200px;
+	top: 0;
+	color:#aebbc6;
+	display:none;
+}
+.orderByNavSelect .orderByNavSelectNode{
+	display: table-cell;
+	height: 35px;
+	cursor: pointer;
+	line-height: 35px;
+	text-align: center;
+	background: #142533;
+	border-right: #25394a solid 1px;
+}
+.orderByNavSelect .orderByNavSelectNode:first-child{
+	border-top-left-radius: 4px;
+	border-bottom-left-radius: 4px;
+}
+.orderByNavSelect .orderByNavSelectNode:last-child{
+	border-right: none;
+	border-top-right-radius: 4px;
+	border-bottom-right-radius: 4px;
+}
+.orderByNavSelect .orderByNavSelectNode i{
+	color:#4b6982;
+}
+.orderByNavSelect .orderByNavSelectNode.selectNode i{
+	color:#0098ce;
+}
+.orderByNavSelect .orderByNavSelectNode.selectNode{
+	background:#04111b;
+}
+.chartFrame{
+	width: 100%;
+	position: absolute;
+	top: 60px;
+	bottom: 0;
+	padding:0px 10px;
+}
+.chartFrame .chartNodeBarBox{
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 40px;
+	background-color: #25394a;
+	z-index: 10;
+}
+.chartNodeBarBox .chartNodeBarTab{
+	position: absolute;
+	z-index: 10;
+	left: 0;
+	right: 0;
+	height: 40px;
+}
+.chartNodeBarBox .chartNodeBarTabValue{
+	position: absolute;
+	width: 200px;
+	height: 35px;
+	line-height: 32px;
+	text-align: center;
+	color: #aebbc6;
+	border-bottom: #5b6f80 solid 1px;
+	border-left: #5b6f80 solid 1px;
+	top: 0;
+	cursor: pointer;
+	background: #142533;
+}
+.chartNodeBarBox .chartNodeBarTabValue.hover,
+.chartNodeBarBox .chartNodeBarTabValue:hover{
+	color:#fff;
+	background: #000;
+}
+.chartNodeBarBox .chartNodeBarTabValue:first-child{
+	right: 50%;
+	border-bottom-left-radius: 5px;
+}
+.chartNodeBarBox .chartNodeBarTabValue:last-child{
+	left: 50%;
+	border-left: #5b6f80 solid 1px;
+	border-right: #5b6f80 solid 1px;
+	border-bottom: #5b6f80 solid 1px;
+	border-bottom-right-radius: 5px;
+}
+.chartNodeBarBox  .chartNodeBarTabData,
+.chartNodeBarBox  .chartNodeBarTabEmptyData{
+	position: absolute;
+	z-index: 0;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+}
+.chartNodeBarBox  .chartNodeBarTabEmptyData{
+	z-index: 1;
+	background: url(../images/emptyData.png) no-repeat center #25394a;
+}
+.chartFrame .chartNodeBox{
+	width: 50%;
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	overflow:hidden;
+}
+.chartFrame .chartNodeBox.emptyData .emptyData,
+.chartFrame .chartNodeBox.pieChart .pieChart,
+.chartFrame .chartNodeBox.oneData .oneData{
+	display: block;
+}
+.chartFrame .chartNodeContent .oneDataFrame{
+	position:absolute;
+	width:150px;
+	height: 150px;
+	left: 50%;
+	top: 45%;
+	margin-left: -75px;
+	margin-top: -75px;
+	color: #ffffff;
+	text-align: center;
+	white-space: nowrap;
+	overflow: hidden;
+	line-height: 150px;
+	font-size: 40px;
+	text-overflow: ellipsis;
+	border-radius: 150px;
+	background: #000000;
+}
+.chartFrame .chartNodeContent .oneDataFrameTxt{
+	position:absolute;
+	left: 0;
+	bottom: 50px;
+	width: 100%;
+	line-height: 30px;
+	height: 30px;
+	white-space: nowrap;
+	font-size: 16px;
+	color: #ffffff;
+	text-align: center;
+}
+。
+.chartFrame .chartNodeContent .pieChartFrame{
+	position:absolute;
+	left: 0;
+	top: 0;
+	width:100%;
+	height: 30px;
+}
+.chartFrame .chartNodeContent .pieChartCanvas{
+	position:absolute;
+	top: 30px;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	overflow: hidden;
+}
+.chartFrame .chartNodeContent .pieChartFrame p{
+	position:absolute;
+	left: 0;
+	top: 0;
+	width:50%;
+	height: 40px;
+	white-space: nowrap;
+	line-height: 30px;
+	color: #ffffff;
+}
+.chartFrame .chartNodeContent .pieChartFrame span{
+	position:absolute;
+	left: 50%;
+	top: 0;
+	display: block;
+	width:50%;
+	text-align: right;
+	height: 40px;
+	white-space: nowrap;
+	line-height: 30px;
+	color:#9C9C9C;
+}
+.chartFrame .chartNodeBox:first-child{
+	left: 0;
+	right: auto;
+	border-right: 1px solid #5b6f80;
+}
+.chartMaskBox{
+	position:absolute;
+	bottom: 0px;
+	width: 100%;
+	left: 0;
+	height: 40px;
+	background: #25394a;
+	overflow: hidden;
+	border-top: 1px solid #5b6f80;
+	display: none;
+}
+.chartMaskContent{
+	width: 500px;
+	display: table;
+	text-align: center;
+	height: 40px;
+	line-height: 40px;
+	margin: 0 auto;
+	color:#aebbc6;
+}
+.chartMaskContent .chartMaskBoxNode{
+	display: table-cell;
+	height: 40px;
+	line-height: 40px;
+}
+
+.chartNodeContent{
+	position: absolute;
+	left: 10px;
+	top: 10px;
+	bottom: 10px;
+	right: 10px;
+	overflow: hidden;
+	display: none;
+}
+.chartFrame.showMask .chartMaskBox{
+	display: none;
+}
+.chartFrame.showMask .chartNodeContent{
+	bottom: 40px;
+}
+.chartFrame .chartNodeBox .emptyData{
+	background: url(../images/emptyData.png) no-repeat center;
+}
+
+.chartFrame .chartNodeBox.emptyData .emptyData{
+	display: block;
+}
+.chartFrame table
+{
+    width:100%;
+    color:#fff;
+}
+.chartFrame td
+{
+    text-align:center;
+    height:35px;
+}
+.chartFrame a{color:Blue;}
+.chartFrame a:hover{color:yellow;}
+.chartFrame th{ border-bottom:solid 1px #5b6f80; padding:5px 0;}
+.chartFrame table.useradd
+{
+    color:#fff;
+    margin:0 auto;
+    padding-top:20px;
+}
+.chartFrame td.tdL{width:100px; text-align:right;}
+.chartFrame td.tdR{width:200px; text-align:left;}
+.chartFrame td input.btnSubmit{ padding:3px 10px;}
+.chartFrame td.tdR input{width:210px;}
+.list{ overflow: auto; height: 170px;}
+.list::-webkit-scrollbar{width:3px;}
+.list::-webkit-scrollbar-thumb{ background:#5b6f80;border-radius: 5px;}
+.list::-webkit-scrollbar-track{ background:rgba(0,0,0,0.3);border-radius: 0px;}
+
+.alertDiv,.confirmDiv{	position: absolute;	z-index: 8888;	width: 100%;	height: 100%;}
+.alertContent{width:150px; height:100px; margin:100px auto; background:#ccc; text-align:center;border-radius: 5px;opacity: 1;    border: #aaa solid 1px;}
+.alertContent input{padding:5px 10px; border:solid 1px #aaa; border-radius:5px; }
+.alertMsg{width:150px; height:60px; text-align:center; line-height:60px; vertical-align:middle;}

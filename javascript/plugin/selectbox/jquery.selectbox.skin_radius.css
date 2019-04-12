@@ -1,0 +1,206 @@
+/* 下拉框样式 */
+.selectbox.skin_radius {
+	height: 30px;
+	line-height: 30px;
+	border: #c2c2c2 solid 1px;
+	transition: all 0.3s;
+	position: relative;
+	font-size: 14px;
+	box-sizing: content-box !important;
+	moz-user-select: -moz-none;
+	-moz-user-select: none;
+	-o-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	background-color: #fff;
+	border-radius:6px;
+}
+.selectbox_width200 {
+	width: 200px;
+}
+.selectbox_width300 {
+	width: 300px;
+}
+.selectbox.skin_radius * {
+	outline: none;
+	font-size: 14px;
+}
+/* 禁止样式 */
+.selectbox.skin_radius .selectbox_disable, .selectbox.skin_radius .selectbox_disable:hover {
+	color: #6B6B6B;
+	border-color:#6B6B6B;
+	box-shadow: #0099ff 0px 0px 6px 0px;
+	-ms-box-shadow: #0099ff 0px 0px 6px 0px;
+	-o-box-shadow: #0099ff 0px 0px 6px 0px;
+	-webkit-box-shadow: #0099ff 0px 0px 6px 0px;
+}
+/* 内容区样式 */
+.selectbox.skin_radius .selectbox_value {
+	line-height: 30px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	padding: 0 30px 0 10px;
+	position: relative;
+	z-index: 2;
+}
+/* 按钮状态样式 */
+.selectbox.skin_radius .selectbox_arraw {
+	position: absolute;
+	width: 30px;
+	right: 0;
+	text-align: center;
+	font-size: 10px;
+	color: #AEAEAE;
+	cursor: pointer;
+	z-index: 3;
+}
+/* 下拉框三角状态样式 */
+.selectbox.skin_radius .selectbox_arraw .selectbox_up {
+	display: block;
+	height:15px;
+	line-height:10px;
+	font-size:8px;
+	text-align:center;
+	overflow:hidden;
+}
+.selectbox.skin_radius .selectbox_arraw .selectbox_down {
+	display: block;
+	height:15px;
+	font-size:8px;
+	line-height:20px;
+	text-align:center;
+	overflow:hidden;
+}
+/* 列表样式 */
+.selectbox.skin_radius .selectbox_list {
+	position: absolute;
+	left: -1px;
+	top: 29px;
+	z-index: 1000;
+	line-height: 30px;
+	display: none;
+	overflow: hidden;
+	border: #c2c2c2 solid 1px;
+	z-index: 4;
+	margin-top: -1px;
+	overflow: hidden;
+	background: #ffffff;
+}
+/* 列表子项样式 */
+.selectbox.skin_radius .selectbox_body li {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	padding-left: 10px;
+	border-top: #e2e2e2 solid 1px;
+	margin-top: -1px;
+	transition: all 0.3s;
+	-ms-transition: all 0.3s;
+	-moz-transition: all 0.3s;
+	-o-transition: all 0.3s;
+	-webkit-transition: all 0.3s;
+	display: block;
+	cursor: default;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+/* 列表窗口样式 */
+.selectbox.skin_radius .selectbox_body {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	position: absolute;
+	z-index: 0;
+	top: 0;
+	left: 0;
+	right: 0;
+	width: 100%;
+	color: #727272;
+}
+/* 滚动条样式 */
+.selectbox.skin_radius .selectbox_scroll_body {
+	position: absolute;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	width: 15px;
+	z-index: 10;
+}
+/* 滚动条内部样式 */
+.selectbox.skin_radius .selectbox_scroll {
+	position: absolute;
+	width: 15px;
+	top: 0;
+	right: 0;
+	background-color: #9F9F9F;
+	opacity: 0.5;
+	filter: alpha(opacity=50);
+	height: 20%;
+}
+/* 焦点时样式 */
+.selectbox.skin_radius.selectbox_hover {
+	border-color:#0099ff !important;
+	box-shadow: #0099ff 0px 0px 6px 0px;
+	-ms-box-shadow: #0099ff 0px 0px 6px 0px;
+	-o-box-shadow: #0099ff 0px 0px 6px 0px;
+	-webkit-box-shadow: #0099ff 0px 0px 6px 0px;
+}
+/* 焦点时下拉框状态样式 */
+.selectbox.skin_radius.selectbox_hover .selectbox_down {
+	color:#cccccc;
+}
+.selectbox.skin_radius.selectbox_hover .selectbox_up {
+	color:#000000;
+}
+/* 焦点时列表样式 */
+.selectbox.skin_radius.selectbox_hover .selectbox_list {
+	border-color:#0099ff !important;
+	box-shadow: #0099ff 0px 0px 6px 0px;
+	-ms-box-shadow: #0099ff 0px 0px 6px 0px;
+	-o-box-shadow: #0099ff 0px 0px 6px 0px;
+	-webkit-box-shadow: #0099ff 0px 0px 6px 0px;
+	overflow: hidden;
+}
+/* 焦点时列表子项样式 */
+.selectbox.skin_radius .selectbox_nodebover {
+	background: #e2e2e2;
+	padding: 0 20px 0 20px;
+	color: #000;
+}
+/* 焦点时滚动条样式 */
+.selectbox.skin_radius .selectbox_scroll_hover {
+	background-color: #9F9F9F;
+	opacity: 0.7;
+	filter: alpha(opacity=70);
+}
+/* 活动时下拉时列表样式 */
+.selectbox.skin_radius.selectbox_active {
+	border-color:#0099ff !important;
+	box-shadow: #0099ff 0px 0px 6px 0px;
+	-ms-box-shadow: #0099ff 0px 0px 6px 0px;
+	-o-box-shadow: #0099ff 0px 0px 6px 0px;
+	-webkit-box-shadow: #0099ff 0px 0px 6px 0px;
+	border-bottom-left-radius:0px !important;
+	border-bottom-right-radius:0px !important;
+}
+.selectbox.skin_radius.selectbox_active .selectbox_list {
+	border-color:#0099ff !important;
+	box-shadow: #0099ff 0px 0px 6px 0px;
+	-ms-box-shadow: #0099ff 0px 0px 6px 0px;
+	-o-box-shadow: #0099ff 0px 0px 6px 0px;
+	-webkit-box-shadow: #0099ff 0px 0px 6px 0px;
+	overflow: hidden;
+	border-bottom-left-radius:6px !important;
+	border-bottom-right-radius:6px !important;
+}
+/* 活动时下拉框状态样式 */
+.selectbox.skin_radius.selectbox_active .selectbox_down {
+	color:#000000;
+}
+.selectbox.skin_radius.selectbox_active .selectbox_up {
+	color:#cccccc;
+}

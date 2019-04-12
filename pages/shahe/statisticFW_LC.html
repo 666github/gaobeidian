@@ -1,0 +1,139 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>统计分析</title>
+<link type="text/css" rel="stylesheet" href="/style/public/classly.css">
+<link type="text/css" rel="stylesheet" href="/style/public/public.css">
+<link type="text/css" rel="stylesheet" href="/style/fontIcon/font-awesome/css/font-awesome.min.css">
+<script language="javascript" src="/javascript/jquery/jquery.min.js"></script>
+<script src="../../javascript/plugin/store/store.legacy.min.js"></script>
+<script language="javascript" src="/javascript/public/public.js"></script>
+<script src="../../javascript/plugin/websocket/MyWebSocket.js"></script>
+<script src="../../javascript/public/webpublic.js"></script>
+<link type="text/css" rel="stylesheet" href="/pages/safetyManagement/index/css/jquery.selectbox.statistic.css"/>
+<script language="javascript" src="/javascript/plugin/selectbox/jquery.selectbox.js"></script>
+<link type="text/css" rel="stylesheet" href="css/statistic.css">
+<link type="text/css" rel="stylesheet" href="/javascript/plugin/animateCss/animate.min.css">
+<script language="javascript" src="js/statisticFW_LC.js"></script>
+<script language="javascript" src="js/statisticEcharts.min.js"></script>
+<link type="text/css" rel="stylesheet" href="/javascript/plugin/datetimepicker/jquery.datetimepicker.css">
+<script language="javascript" src="/javascript/plugin/datetimepicker/jquery.datetimepicker.js"></script>
+</head>
+
+<body>
+<div class="boxBG webmain">
+	<div class="statisticApp">
+		<div class="loadingStatus hide"></div>
+		<div class="boxClose"><div class="boxCloseImg"></div></div>
+		<div class="boxTitleFrame">
+			<div class="titleBox">
+				<div class="titleBoxLeft"></div>
+				<div class="titleBoxValue">房屋按楼层统计</div>
+			</div>
+		</div>
+		<div class="orderByNavFrame">
+			<!--<div class="titleBox">请选择筛选条件</div>
+			<div class="searchBoxButtonFrame">
+				<div class="endDateTimeInput"><input type="text" placeholder="结束日期"></div>
+				<div class="startDateTimeInput"><input type="text" placeholder="开始日期"></div>
+				<div class="searchBoxButton"><i class="fa fa-fw fa-search"></i></div>
+			</div>-->
+			<div class="orderByNavBox">
+				<div class="orderByNavForHouseManager">
+					<div id="houseManagementSelectbox" class="selectbox">
+						<input value="" type="hidden">
+						<div class="selectbox_arraw"><span class="selectbox_down">▲</span><span class="selectbox_up">▼</span></div>
+						<div class="selectbox_value">请选择</div>
+						<div class="selectbox_list selectbox_width160">
+							<div class="selectbox_scroll_body">
+								<div class="selectbox_scroll"><div></div></div>
+							</div>
+							<ul class="selectbox_body">
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="orderByNavSelect">
+					<div id="wanhaofang" class="orderByNavSelectNode" data-type="1"><i class="fa fa-fw fa-check-square"></i><span>未查</span></div>
+					<div id="jibenwanhao" class="orderByNavSelectNode" data-type="2"><i class="fa fa-fw fa-square"></i><span>在查</span></div>
+					<div id="yibansunhuai" class="orderByNavSelectNode" data-type="3"><i class="fa fa-fw fa-check-square"></i><span>已查</span></div>
+					<div id="yanzhongsunhuai" class="orderByNavSelectNode" data-type="4"><i class="fa fa-fw fa-check-square"></i><span>锁门</span></div>
+					<div id="weixianfang" class="orderByNavSelectNode" data-type="5"><i class="fa fa-fw fa-square"></i><span>拒查</span></div>
+				</div>
+			</div>
+		</div>
+		<div class="chartFrame showMask">
+			<div class="chartNodeBox emptyData" chartWidth="469" chartHeight="260">
+				<div class="chartNodeContent oneData">
+					<div class="pieChartFrame">
+						<p>房屋数量</p>
+						<span>单位：个</span>
+					</div>
+					<div class="oneDataFrame">0</div>
+					<div class="oneDataFrameTxt"></div>
+				</div>
+				<div class="chartNodeContent pieChart">
+					<div class="pieChartFrame">
+						<p>房屋数量</p>
+						<span>单位：个</span>
+					</div>
+					<div class="pieChartCanvas"></div>
+					<!--pieChart-->
+				</div>
+				<div class="chartNodeContent emptyData"></div>
+				<div class="chartNodeContent barChart"></div>
+			</div>
+			<div class="chartNodeBox emptyData" chartWidth="469" chartHeight="260">
+				<div class="chartNodeContent oneData">
+					<div class="pieChartFrame">
+						<p>占地面积</p>
+						<span>单位：万平方米</span>
+					</div>
+					<div class="oneDataFrame">0</div>
+					<div class="oneDataFrameTxt"></div>
+				</div>
+				<div class="chartNodeContent pieChart">
+					<div class="pieChartFrame">
+						<p>占地面积</p>
+						<span>单位：万平方米</span>
+					</div>
+					<div class="pieChartCanvas"></div>
+					<!--pieChart-->
+				</div>
+				<div class="chartNodeContent emptyData"></div>
+				<div class="chartNodeContent barChart"></div>
+			</div>
+			<div class="chartNodeBarBox" chartWidth="980" chartHeight="400">
+				<div class="chartNodeBarTab">
+					<div class="chartNodeBarTabValue hover">房屋数量（个）</div>
+					<div class="chartNodeBarTabValue">房屋面积（万平方米）</div>
+				</div>
+				<div class="chartNodeBarTabData"></div>
+				<div class="chartNodeBarTabData hide"></div>
+				<div class="chartNodeBarTabEmptyData"></div>
+			</div>
+			<div class="chartMaskBox">
+				<div class="chartMaskContent">
+				<div mask-id="wanhaofang" class="chartMaskBoxNode">
+					<i class="fa fa-fw fa-square" style="color: #db4d5d"></i><span>未查</span>
+				</div>
+				<div mask-id="jibenwanhao" class="chartMaskBoxNode">
+					<i class="fa fa-fw fa-square" style="color: #f5c86b"></i><span>在查</span>
+				</div>
+				<div mask-id="yibansunhuai" class="chartMaskBoxNode">
+				<i class="fa fa-fw fa-square" style="color: #1eb5a4"></i><span>已查</span>
+				</div>
+				<div mask-id="yanzhongsunhuai" class="chartMaskBoxNode">
+					<i class="fa fa-fw fa-square" style="color: #db4dbb"></i><span>锁门</span>
+				</div>
+				<div mask-id="weixianfang" class="chartMaskBoxNode">
+					<i class="fa fa-fw fa-square" style="color: #6b93f5"></i><span>拒查</span>
+				</div>
+			</div>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>

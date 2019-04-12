@@ -1,0 +1,503 @@
+﻿<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <title>高碑店乡房屋管理系统</title>
+    <!--<link type="text/css" rel="stylesheet" href="css/bootstrap.min.css"/>
+    <link rel="Shortcut Icon" href="../../images/public/favicon.ico" />
+    <link type="text/css" rel="stylesheet" href="../../style/public/classly.css"/>
+    <link type="text/css" rel="stylesheet" href="../../style/public/public.css"/>
+    <link type="text/css" rel="stylesheet" href="../../style/fontIcon/font-awesome/css/font-awesome.min.css"/>
+    <link type="text/css" rel="stylesheet" href="css/public.css"/>
+    <link type="text/css" rel="stylesheet" href="../../javascript/plugin//paginator/jquery.paginator.css"/>
+    <link type="text/css" rel="stylesheet" href="../../javascript/plugin/viewer/css/viewer.min.css"/>-->
+    <link type="text/css" rel="stylesheet" href="../../javascript/plugin/animateCss/animate.min.css"/>
+    <!--<link rel="stylesheet" href="css/fileinput.min.css"/>
+    <link rel="stylesheet" type="text/css" href="dist/basicContext.min.css"/>
+    <link rel="stylesheet" type="text/css" href="dist/themes/default.min.css"/>-->
+    <link type="text/css" rel="stylesheet" href="../../javascript/plugin/titletip/jquery.titletip.css" />
+    <link rel="stylesheet" href="http://localhost/arcgis_js_api/library/3.15/3.15compact/dijit/themes/claro/claro.css" />
+    <link rel="stylesheet" href="http://localhost/arcgis_js_api/library/3.15/3.15compact/esri/css/esri.css" />
+    <link type="text/css" rel="stylesheet" href="css/shahefw.css" />
+    <link rel="stylesheet" type="text/css" href="./layui/css/layui.css"/>
+    <script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
+    <!--<script type="text/javascript" src="js/bootstrap.min.js"></script>-->
+    <script type="application/javascript">
+
+        (function ($, h, c) {
+            var a = $([]), e = $.resize = $.extend($.resize, {}), i, k = "setTimeout", j = "resize", d = j + "-special-event", b = "delay", f = "throttleWindow";
+            e[b] = 250;
+            e[f] = true;
+            $.event.special[j] = {
+                setup: function () {
+                    if (!e[f] && this[k]) { return false }
+                    var l = $(this); a = a.add(l);
+                    $.data(this, d, { w: l.width(), h: l.height() });
+                    if (a.length === 1) { g() }
+                },
+                teardown: function () {
+                    if (!e[f] && this[k]) { return false }
+                    var l = $(this); a = a.not(l); l.removeData(d);
+                    if (!a.length) { clearTimeout(i) }
+                },
+                add: function (l) {
+                    if (!e[f] && this[k]) { return false }
+                    var n;
+                    function m(s, o, p) {
+                        var q = $(this), r = $.data(this, d);
+                        r.w = o !== c ? o : q.width();
+                        r.h = p !== c ? p : q.height(); n.apply(this, arguments)
+                    }
+                    if ($.isFunction(l)) { n = l; return m }
+                    else { n = l.handler; l.handler = m }
+                }
+            };
+            function g() {
+                i = h[k](function () {
+                    a.each(function () {
+                        var n = $(this), m = n.width(), l = n.height(), o = $.data(this, d);
+                        if (m !== o.w || l !== o.h) {
+                            n.trigger(j, [o.w = m, o.h = l])
+                        }
+                    });
+                    g()
+                }, e[b])
+            }
+        })(jQuery, this);
+
+    </script>
+    <script src="../../javascript/plugin/store/store.legacy.min.js"></script>
+    <script src="../../javascript/plugin/websocket/MyWebSocket.js"></script>
+    <script src="../../javascript/public/webpublic.js"></script>
+    <script src="js/shahefw.js"></script>
+    <script src="jsPlus/shahefw_gis.js"></script>
+    <script src="jsPlus/shahefw.js"></script>
+    <script src="../../javascript/plugin/divscroll/jquery.divscroll.js"></script>
+    <script src="../../javascript/plugin/titletip/jquery.titletip.min.js"></script>
+    <script src="../../javascript/view/uiWidget.js"></script>
+    <script language="javascript" src="../../javascript/plugin/tabplugin/jquery.tabplugin.js"></script>
+    <script src="../../javascript/plugin/paginator/jquery.paginator.js"></script>
+    <script src="js/statisticEcharts.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="js/echarts.js"></script>   
+    <!--<script src="../../javascript/plugin/viewer/js/viewer.js"></script>
+    <script src="../../json/public/websiteInfo.js"></script>
+    <script src="jsPlus/action.js"></script>
+    <script src="js/historyLink.js"></script>
+    <script src="js/jquery-tab.js"></script>
+    <script src="js/jquery.multipurpose_tabcontent.js"></script>
+    <script src="js/fileinput.min.js"></script>
+    <script src="js/locales/zh.js"></script>
+    <script src="js/laydate/laydate.js"></script>
+    <script src="js/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="js/jquery-validation/dist/localization/messages_zh.js"></script>
+    <script src="dist/basicContext.min.js" type="text/javascript"></script>-->
+    <script src="http://localhost/arcgis_js_api/library/3.15/3.15compact/init.js"></script>
+    <style type="text/css">
+    	.layui-nav-item{text-align: center;border-bottom: solid 1px #FFFFFF;}
+    	.layui-nav-child dd{text-align: right;}
+    </style>
+</head>
+<body class="webFrameBox">
+    <div class="webFrameAutoWidth">
+        <!--搜索结果-->
+        <div class="webSearchContentBox">
+            <div class="webSearchHead">
+                <div class="head">
+                    搜索结果
+                </div>
+                <a class="closeWebSearch" href="javascript:void(0)"></a>
+            </div>
+            <div class="webSearchResult">
+                <div class="resultsBox">
+                    <div class="searchValueNode searchValueNodeTempelte hide">
+                        <div class="searchValueNodeIcon">
+                        </div>
+                        <div class="searchValueNodeTitle linktitletip">
+                        </div>
+                        <!--<div class="searchValueNodeTip">
+                        </div>-->
+                        <div class="searchValueNodeAddress">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="searchValueBoxPage">
+            </div>
+        </div>
+        <div class="bodyContent">
+            <!-- 右边菜单 -->
+            <div class="rightMenuBar">               
+                <div class="toolsButtonFrame"><!--notshow -->
+                    <!--<ul class="layui-nav layui-nav-tree iconToolsNode" lay-filter="" style="width: 100px;padding: 0;">
+					  <li class="layui-nav-item" style="height: 39px;">
+					    <a href="javascript:;" id="fwsx" style="">房屋筛选</a>
+					    <dl class="layui-nav-child fwshaixuan">
+					      <dd>
+					      	<input type="checkbox" name="" data="sq" lay-skin="primary" />
+	    					<a href="javascript:;" style="display: inline">按社区&nbsp;&nbsp;</a>
+					      </dd>
+					      <dd>
+					      	<input type="checkbox" name="" data="cun" lay-skin="primary" />
+	    					<a href="javascript:;" style="display: inline">按村落&nbsp;&nbsp;</a>
+					      </dd>
+					      <dd>
+					      	<input type="checkbox" name="" data="gy" lay-skin="primary" />
+	    					<a href="javascript:;" style="display: inline">按国有&nbsp;&nbsp;</a>
+					      </dd>
+					      <dd>
+					      	<input type="checkbox" name="" data="jt" lay-skin="primary" />
+	    					<a href="javascript:;" style="display: inline">按集体&nbsp;&nbsp;</a>
+					      </dd>
+					    </dl>
+					  </li>						  
+					</ul>-->			        
+                    <div class="iconToolsNode ditugongju">
+                    	测量工具
+                        <ul class="dituTools">
+                            <li class="lengthcesuan" onclick="mapMeasure(1);">长度测算</li>
+                            <li class="areacesuan" onclick="mapMeasure(2);">面积测算</li>
+                        </ul>
+                    </div>
+                    <div class="iconToolsNode quyuchaxun">
+                        区域查询</div>
+                    <div class="iconToolsNode delete">
+                        清除</div>
+                    <div class="iconToolsNode fuulScreen">
+                        返回全图</div>                       
+                    <div class="iconToolsNode stat">
+                        数据统计</div>
+                    <div class="iconToolsNode usermgr">
+                        用户管理</div>
+                    <div class="iconToolsNode loginout">
+                        退出登录</div>
+                </div>
+                <div class="spreadBtnBox">
+                </div>                
+            </div>
+            <div class="rightMenuBar2 notshow">
+            	<div class="toolsButtonFrame2">
+                	<form class="layui-form" action="" id="layuiForm">
+                		<div class="layui-form-item fwsxFormParent" style="margin-bottom: 10px;">
+                			<label class="layui-form-label" style="padding: 9px 0;width: 78px;">房屋筛选：</label>
+                			<div class="layui-input-inline fwsxForm">
+						        <input type="text" name="title" lay-verify="title" value='' autocomplete="off" placeholder="请选择村" class="layui-input fwsxFormCun">
+						        <div class="fwsxFormCunInput notshow">								      
+							    </div>
+						    </div>
+						    <div class="layui-input-inline fwsxForm">						      
+						        <input type="text" name="title" lay-verify="title" value='' autocomplete="off" placeholder="请选择社区" class="layui-input fwsxFormSq">
+						        <div class="fwsxFormSqInput notshow">								      
+							    </div>							      
+						    </div>						    
+						    <div class="layui-input-inline fwsxForm">
+						      <select name="" class="fwsjFormTd" lay-filter="fwsjFormTd">
+						        <option value="">土地类型</option>
+						        <option value="国有">国有土地</option>
+						        <option value="集体">集体土地</option>
+						      </select>
+						    </div>
+						    <div class="layui-input-inline fwsxForm">
+						      <!--<select name="" class="fwsjFormDk" lay-filter="fwsjFormDk">
+						        <option value="dk">地块类型</option>
+						      </select>-->
+						      <input type="text" name="title" lay-verify="title" value='' autocomplete="off" placeholder="请选择地块" class="layui-input fwsjFormDk">
+						        <div class="fwsjFormDkInput notshow">								      
+							    </div>
+						    </div>
+						    <div class="layui-input-inline fwsxForm">
+						      <!--<select name="" class="fwsjFormYt" lay-filter="fwsjFormYt">
+						        <option value="yt">用途</option>
+						      </select>-->
+						      <input type="text" name="title" lay-verify="title" value='' autocomplete="off" placeholder="请选择用途" class="layui-input fwsjFormYt">
+						        <div class="fwsjFormYtInput notshow">								      
+							    </div>
+						    </div>
+						    <span class="layui-btn layui-btn-xs" id="fwsxBtn">筛选图层</span>
+						    <span class="layui-btn layui-btn-xs" id="fwsxTjBtn" >统计</button>
+						</div>
+						<div class="layui-form-item" style="margin-bottom: 10px;">
+                			<label class="layui-form-label" style="padding: 9px 0;width: 78px;">地块类型：</label>						    
+						    <div class="layui-input-inline fwsxForm">
+						      <!--<select name="" class="fwsjFormYt2" lay-filter="fwsjFormYt2">
+						      </select>-->
+						      <input type="text" name="title" lay-verify="title" value='' autocomplete="off" placeholder="请选择地块" class="layui-input fwsjFormDk2">
+						        <div class="fwsjFormDk2Input notshow">								      
+							    </div>
+						    </div>
+						    <span class="layui-btn layui-btn-xs" id="dksxBtn">筛选</span>
+						    <span class="layui-btn layui-btn-xs" id="dksxTjBtn">统计</span>
+						</div>
+                	</form>                	
+                </div>
+            </div>
+            <!--查询选择图层-->
+            <div class="querySelect">
+			    <select name="layerselect" class="layerselect">
+			        <option value="CUN">村界</option>
+			        <option value="SQ">社区界</option>
+			        <option value="FW">房屋</option>
+			    </select>
+            </div>
+            <!--房屋渲染 & 地块渲染-->
+            <ul class="layui-nav layui-nav-tree layerControl" lay-filter="test">
+        	 <li class="layui-nav-item layui-nav-itemed">
+        	 <a href="javascript:;" style="border-radius:10px ;">图层控制</a>
+        	 <ul class="layui-nav-child">
+        	 	</li>
+        	 <li class="">
+        	  	<input type="checkbox" name="" data="1" lay-skin="primary" checked style="margin-top: -2px;margin-bottom: 1px;vertical-align: middle;" />
+			    <a href="javascript:;" style="width: 140px;display: inline">村界　　&nbsp;&nbsp;</a>
+        	  </li>
+			  <li class="">
+			  	<input type="checkbox" name="" data="2" lay-skin="primary" checked style="margin-top: -2px;margin-bottom: 1px;vertical-align: middle;" />
+			    <a href="javascript:;" style="width: 140px;display: inline">社区界　&nbsp;&nbsp;</a>
+			  </li>
+			  <li class="">
+			    <input type="checkbox" name="" data="3" lay-skin="primary" checked style="margin-top: -2px;margin-bottom: 1px;vertical-align: middle;" />
+			    <a href="javascript:;" style="width: 140px;display: inline">土地类型&nbsp;&nbsp;</a>
+			    <dl class="layui-nav-child">
+			      <dd>
+			      	<input type="checkbox" name="" data="4" lay-skin="primary" checked style="margin-top: -2px;margin-bottom: 1px;vertical-align: middle;" />
+			    	<a href="javascript:;" style="width: 140px;display: inline">国有土地&nbsp;&nbsp;</a>
+			      </dd>
+			      <dd>
+			      	<input type="checkbox" name="" data="5" lay-skin="primary" checked style="margin-top: -2px;margin-bottom: 1px;vertical-align: middle;" />
+			    	<a href="javascript:;" style="width: 140px;display: inline">集体土地&nbsp;&nbsp;</a>
+			      </dd>
+			    </dl>
+			  </li>
+			  <li class="">
+			    <input type="checkbox" name="" data="6" lay-skin="primary" checked style="margin-top: -2px;margin-bottom: 1px;vertical-align: middle;" />
+			    <a href="javascript:;" style="width: 140px;display: inline">房屋数据&nbsp;&nbsp;</a>
+			    </li>
+			  <li class="topMenuBar">
+			  	<input type="checkbox" name="" data="7" lay-skin="primary" checked disabled style="margin-top: -2px;margin-bottom: 1px;vertical-align: middle;" />
+			  	<a href="javascript:;" style="width: 140px;display: inline">底图　　&nbsp;&nbsp;</a>
+			    	<!-- 头部菜单 -->
+	                <dl class="layui-nav-child tabMapPicButtonFrame">
+	                    <dd class="picButtonTab  selected" title="影像地图">
+	                    	<input type="radio" name="ditu" data="8" lay-skin="primary" checked style="margin-top: -2px;margin-bottom: 1px;vertical-align: middle;" />
+	                    	<a href="javascript:;" style="width: 140px;display: inline">影像　　&nbsp;&nbsp;</a>
+	                    </dd>
+	                    <dd class="ghzhButtonTab" title="政务地图">
+	                    	<input type="radio" name="ditu" data="9" lay-skin="primary"  style="margin-top: -2px;margin-bottom: 1px;vertical-align: middle;" />
+	                    	<a href="javascript:;" style="width: 140px;display: inline">政务　　&nbsp;&nbsp;</a>
+	                    </dd>
+	                    <dd class="tdlyButtonTab" title="地形图">
+	                    	<input type="radio" name="ditu" data="10" lay-skin="primary"  style="margin-top: -2px;margin-bottom: 1px;vertical-align: middle;" />
+	                    	<a href="javascript:;" style="width: 140px;display: inline">地形图　&nbsp;&nbsp;</a>
+	                    </dd>
+	                </dl>
+			  </li>
+        	 </ul>	
+        	 </li>
+			</ul>
+            <div class="bottomMenuBar bar1" style="height: 300px;display: none;">           	
+                <div class="toggleBox">
+                    <div class="testswitch linktitletip" title="是否显示【地块】图层">
+                        <input class="testswitch-checkbox" id="onoffswitch_dk" type="checkbox" checked>
+                        <label class="testswitch-label" for="onoffswitch_dk">
+                            <span class="testswitch-inner" data-on="地块" data-off="地块"></span><span class="testswitch-switch">
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                <div class="menuBox" style="border-left-width: 0px;">
+                    <div title="普通渲染" class="childNode iconDK_Normal linktitletip active">
+                    </div>
+                    <div title="地块分类" class="childNode iconDK_FL linktitletip">
+                    </div>
+                    <div title="所属村" class="childNode iconDK_SQ linktitletip">
+                    </div>
+                </div>
+                <div class="menuBox" style="padding-left: 10px;">
+                    <div title="普通渲染" class="childNode iconFW_Normal linktitletip active">
+                    </div>
+                    <div title="建筑年代" class="childNode iconFW_BuildYear linktitletip">
+                    </div>
+                    <div title="所属村" class="childNode iconFW_SQ linktitletip">
+                    </div>
+                </div>
+                <div class="toggleBox" style="padding-left: 0px;">
+                    <div class="testswitch linktitletip" title="是否显示【房屋】图层">
+                        <input class="testswitch-checkbox" id="onoffswitch_fw" type="checkbox" checked>
+                        <label class="testswitch-label" for="onoffswitch_fw">
+                            <span class="testswitch-inner" data-on="房屋" data-off="房屋"></span><span class="testswitch-switch">
+                            </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <!-- 搜索 -->
+            <div class="searchBoxFrame">
+                <div class="searchInput">
+                    <input class="searchData" type="text" placeholder="请输入">
+                    <div class="searchButton">
+                        <i class="fa fa-fw fa-search"></i>
+                    </div>
+                    <div class="searchClose">
+                        <i class="fa fa-fw fa-times-circle"></i>
+                    </div>
+                </div>
+            </div>
+            <!--  地图  -->
+            <div class="mapContent" id="mapContent">
+            </div>
+            <!-- 图例-土地利用总体规划图 & 规划整合图 -->
+            <div class="legendBox hide">
+            	<a class="closeImageLegend" href="javascript:void(0)"></a>
+            </div>
+            <!-- 图例详情 -->
+            <div class="legendShow hide layui-anim layui-anim-rotate">图例显示</div>
+            <div class="legendInfo">
+                <div class="title">
+                    <span>图例</span> <a class="closeSpreadBox" href="javascript:void(0)"></a>
+                </div>
+                <div class="legendListBox">
+                </div>
+            </div>
+        </div>
+        <!--用户管理-->
+        <div class="userBoxFram hide">
+            <div class="chartBoxMain">
+                <div class="chartNavBoxMain">
+                    <div class="boxTitleFrame">
+                        <div class="titleBox">
+                            <div class="titleBoxLeft">
+                            </div>
+                            <div class="titleBoxValue">
+                                用户管理</div>
+                            <div class="titleBoxRight">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chartBoxMainborder">
+                        <div class="iconNode subMenu" src="userList.html">
+                            <div class="iconNodeDomBg">
+                            </div>
+                            <div class="iconNodeDom" style="background: LimeGreen">
+                                <img src="images/userList.png" width="50px" height="50px"></div>
+                            <div class="iconNodeTip">
+                                用户列表</div>
+                        </div>
+                        <div class="iconNode subMenu" src="userAdd.html">
+                            <div class="iconNodeDomBg">
+                            </div>
+                            <div class="iconNodeDom" style="background: orange">
+                                <img src="images/userAdd.png" width="50px" height="50px"></div>
+                            <div class="iconNodeTip">
+                                添加用户</div>
+                        </div>
+                    </div>
+                </div>
+                <iframe class="userIframe hide" height="100%" width="100%" frameborder="0" hspace="0"
+                    marginheight="0" marginwidth="0" scrolling="no" vspace="0"></iframe>
+            </div>
+            <div class="chartBoxBg">
+            </div>
+            <div class="chartBoxClose">
+                ×</div>
+        </div>
+        <!--统计图-->
+        <div class="chartBoxFrame hide">
+            <div class="chartBoxMain">
+                <div class="chartNavBoxMain">
+                    <div class="boxTitleFrame">
+                        <div class="titleBox">
+                            <div class="titleBoxLeft">
+                            </div>
+                            <div class="titleBoxValue">
+                                房屋统计情况</div>
+                            <div class="titleBoxRight">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chartBoxMainborder" style="margin-top: 50px;">
+                    	<button type="button" onclick="BtnF_0()" class="layui-btn layui-btn-radiu btnf_0" >详情说明</button>
+                    	<button type="button" onclick="BtnF_1()" class="layui-btn layui-btn-radiu" >类型明细</button>
+					    <button type="button" onclick="BtnF_2()" class="layui-btn layui-btn-radiu" >社区明细</button>
+					    <button type="button" onclick="BtnF_3()" class="layui-btn layui-btn-radiu" >各村明细</button>
+					    <button type="button" onclick="Btn_Pie()" class="layui-btn layui-btn-radiu" >饼图</button>
+					    <button type="button" onclick="Btn_Bar()" class="layui-btn layui-btn-radiu" >柱状图</button>
+					    <p class="barPieChange"><select id="village"></select>|<select id="Community"></select></p>
+                    </div>
+                    <div class="layui-form tbChart tjt"  style="margin-top: 80px;">
+                    	<!--<table class="layui-table" id="tab_4">
+					    </table>
+					    <div id="bar"  style="height: 400px;"></div>-->
+                    </div>
+                </div>
+            </div>
+            <div class="chartBoxBg">
+            </div>
+            <div class="chartBoxClose">
+                ×</div>
+        </div>
+        <!--房屋区域查询表单-->
+        <div class="chartBoxFrame2 hide">
+            <div class="chartBoxMain">
+                <div class="chartNavBoxMain">
+
+                    <div class="chartBoxMainborder" >
+                    	<ul class="layui-nav" lay-filter="">
+						  <li class="layui-nav-item layui-this" id="clickSx"><a href="#shuxing">属性表</a></li>						  
+						  <li class="layui-nav-item" id="clickTj"><a href="#tongji">统计表</a></li>
+						</ul>
+                    </div>
+                    <div class="layui-form sxtj">
+                    	<table class="layui-table" id="shuxing">
+					    </table>
+					    <table class="layui-table" id="tongji">
+					    </table>
+                    </div>
+                </div>
+                <div class="chartBoxClose2">
+                ×</div>
+            </div>
+            <!--<div class="chartBoxBg">
+            </div>-->            
+        </div>
+        <!--房屋/用途筛选表单-->
+        <div class="chartBoxFrame3 hide">
+            <div class="chartBoxMain">
+                <div class="chartBoxMainborder" >
+                	<ul class="layui-nav" lay-filter="">
+					  <li class="layui-nav-item layui-this" id="clickfw1"><a href="#fwyt1">统计表（用途）</a>
+					  	
+					  </li>						  
+					  <li class="layui-nav-item" id="clickfw2"><a href="#fwyt2">统计表（地块）</a></li>
+					</ul>
+                </div>
+                <div class="layui-form sxtjFw">
+                	<table class="layui-table" id="fwyt1">
+				    </table>
+				    <table class="layui-table" id="fwyt2">
+				    </table>
+                </div>
+                <div class="chartBoxClose3">
+                ×</div>
+            </div>
+        </div>
+        <div class="chartBoxFrame4 hide">
+            <div class="chartBoxMain">
+                <div class="chartBoxMainborder" >
+                	<ul class="layui-nav" lay-filter="">
+					  <li class="layui-nav-item layui-this" ><span >地块类型统计表</span></li>						  
+					</ul>
+                </div>
+                <div class="layui-form sxtjYt">
+                	<table class="layui-table" id="fwyt3">
+				    </table>
+                </div>
+                <div class="chartBoxClose4">
+                ×</div>
+            </div>
+        </div>
+    </div>
+    <script src="./layui/layui.all.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>

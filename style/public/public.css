@@ -1,0 +1,262 @@
+@charset "UTF-8";
+html {
+	position: relative;
+	min-height: 100%;
+}
+body { color: #222222; }
+a { text-decoration: none; }
+a:link, a:visited { color: #222222; }
+a:hover, a:active { color: #222222; }
+.loadingStatusBox {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 999;
+}
+.emptyDataBox{
+	position:absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	background: url(/images/public/emptyData.png) no-repeat center;
+	z-index: 9;
+}
+.loadingStatusBox *{
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+}
+.loadingStatusBox .loadingStatusBoxIcon{
+	background: url(/images/public/loading.gif) no-repeat center;
+	z-index: 2;
+}
+.loadingStatusBox .loadingStatusBoxBg{
+	background: #ffffff;
+	opacity: 0.9;
+	z-index: 1;
+}
+.loadingbox {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 101000;
+}
+.loadingbox.to_target {
+	position: absolute;
+	z-index: 999;
+}
+.loadingbox .loadingbox_bg {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #ffffff;
+	opacity: 0.8;
+	filter: alpha(opacity=80);
+	z-index: 0;
+}
+.loadingbox .loadingbox_icon {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 1;
+	background: url(/images/public/loading.gif)no-repeat center;
+}
+.alertboxframe, .alertbox {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 10099;
+}
+.alertboxframe .alertboxframe_bg, .alertbox .alertbox_bg {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #ffffff;
+	opacity: 0.8;
+	filter: alpha(opacity=80);
+	z-index: 0;
+}
+.alertboxframe .alertboxframe_child { }
+.alertbox .alertbox_frame {
+	position: absolute;
+	width: 400px;
+	left: 50%;
+	top: 50%;
+	background-color: #ffffff;
+	margin: -100px auto auto -200px;
+	z-index: 1;
+	border: #e5e5e5 solid 1px;
+	border-radius: 3px;
+	-moz-box-shadow: 0px 2px 25px rgba(0,0,0,0.25);
+	-webkit-box-shadow: 0px 2px 25px rgba(0,0,0,0.25);
+	-o-box-shadow: 0px 2px 25px rgba(0,0,0,0.25);
+	-ms-box-shadow: 0px 2px 25px rgba(0,0,0,0.25);
+	box-shadow: 0px 2px 25px rgba(0,0,0,0.25);
+}
+.alertbox .alertbox_message {
+	line-height: 30px;
+	overflow: hidden;
+	word-break: break-all;
+	word-wrap: break-word;
+	white-space:normal;
+}
+.alertbox .alertbox_group {
+	padding: 20px 20px;
+	text-align: center;
+}
+.alertbox .alertFrame{
+	position:absolute;
+	background: #fff;
+	border: 1px solid #e5e5e5;
+	box-shadow: 0px 3px 10px rgba(0,0,0,0.1);
+	top: 50%;
+	left: 50%;
+}
+.alertbox .alertHead{
+	position: relative;
+	height:50px;
+	line-height: 50px;
+	border-bottom: 1px solid #e5e5e5;
+	background: #f7f7f7;
+	font-size: 17px;
+	text-align: left;
+}
+.alertbox .alertTitle{
+	padding-left: 20px;
+	position: absolute;
+	box-sizing: border-box	
+}
+.alertbox .closeAlertBox{
+	position: absolute;
+	right: 10px;
+	top: 10px;
+	width: 30px;
+	height: 30px;
+	background:url(/images/public/loadingCloseIcon.png) no-repeat;
+	background-position: 0px 0px;
+	cursor:pointer;
+}
+.alertbox .closeAlertBox:hover{
+	background-position: 0px -30px;
+}
+.alertbox .alertContent{
+	padding: 20px 20px 10px;
+	line-height: 25px;
+	position: relative;
+}
+.alertbox .alertContent .contentMsg{
+	width:100%;
+	box-sizing: border-box;
+	border: 1px solid #e5e5e5;
+	border-radius: 4px;
+	outline: none;
+}
+.alertbox .alertContent input{
+	height:30px;
+	line-height: 30px;
+	padding: 0px 5px;
+}
+.alertbox .alertContent textarea{
+	padding: 5px;
+	outline: none;
+	resize: none;
+	min-height:100px;
+}
+.alertbox .alertContent .contentTip{
+	position:absolute;
+	color: #f00;
+	font-size: 12px;
+}
+.alertbox .alertFooter{
+	padding: 10px 20px 20px;
+	text-align: right;
+}
+/* html编辑器里面文本样式 */
+.htmlcontent {
+	font-size: 14px !important;
+	line-height: 2 !important;
+	position: relative;
+	color: #222222 !important;
+}
+.htmlcontent p {
+	font-size: 14px !important;
+	padding: 0 0 15px 0;
+	margin: 0;
+}
+.htmlcontent img {
+	border: none !important;
+	max-width: 100% !important;
+}
+/* 日历框样式色值覆盖 */
+.xdsoft_datetimepicker .xdsoft_calendar td.xdsoft_default, .xdsoft_datetimepicker .xdsoft_calendar td.xdsoft_current, .xdsoft_datetimepicker .xdsoft_timepicker .xdsoft_time_box >div >div.xdsoft_current, .xdsoft_datetimepicker .xdsoft_label > .xdsoft_select > div > .xdsoft_option.xdsoft_current { background: #0098ce !important; }
+.xdsoft_datetimepicker .xdsoft_calendar td.xdsoft_today { color: #ffffff; }
+
+.alert_box_layer {
+	position: fixed;
+	z-index: 999999;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+}
+.alert_box_layer_bg {
+	background-color: #000000;
+	opacity: 0.5;
+	filter: alpha(opacity=50);
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 1;
+}
+.alert_box_layer iframe {
+	position: absolute;
+	z-index: 2;
+	width: 300px;
+	height: 300px;
+	display: block;
+	left: 0;
+	top: 50%;
+	right: 0;
+	bottom: 0;
+	margin: 0 auto;
+	border-radius: 5px;
+	-webkit-box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+	-moz-box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+	-ms-box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+	-o-box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+	box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+/* 返回顶部 */
+.scrolltop {
+	position: fixed;
+	cursor:pointer;
+	bottom: 50px;
+	right: 30px;
+	width: 40px;
+	height: 40px;
+	border-radius: 10px;
+	z-index: 10001;
+	background: url(/images/public/scrollToTop.png) no-repeat center center #ccc;
+	background-size:12px;
+}
+.scrolltop:hover{
+	background-color:#686868;
+}
+

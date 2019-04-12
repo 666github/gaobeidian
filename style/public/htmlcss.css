@@ -1,0 +1,29 @@
+@charset "UTF-8";
+/* CSS Document */
+.html_content_frame{
+	font-size:14px;
+	position:relative;
+	line-height:25px;
+	overflow:hidden;
+	word-break:break-all;
+	word-wrap:break-word;
+}
+.html_content_frame pre{
+	overflow:hidden;
+	word-break:break-all;
+	word-wrap:break-word;
+	white-space: inherit;
+}
+.html_content_frame p{
+	margin:0px;
+	padding:10px 0;
+}
+.html_content_frame img{
+	position:relative;
+	border:none;
+	max-width:90%;
+	text-align:center;
+}
+.html_content_frame a{
+	color:inherit;
+}

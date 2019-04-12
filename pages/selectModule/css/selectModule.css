@@ -1,0 +1,498 @@
+/* CSS Document */
+.selectModuleBox{
+	position:fixed;
+	width: 100%;
+	height: 100%;
+	left: 0;
+	top: 0;
+}
+.selectModuleBg{
+	position:fixed;
+	width: 100%;
+	height: 100%;
+	left: 0;
+	top: 0;
+	background:url(../images/gyc.jfif) no-repeat;
+	background-size: cover;
+}
+.selectModuleBg img{
+	border:none;
+}
+.selectModuleBg .bottomColor{
+	background: linear-gradient(rgba(0,0,0,0), rgba(37,160,217,0.6)); /* 标准的语法 */
+	background: -webkit-linear-gradient(rgba(0,0,0,0), rgba(37,160,217,0.6)); /* Safari 5.1 - 6.0 */
+	background: -o-linear-gradient(rgba(0,0,0,0), rgba(37,160,217,0.6)); /* Opera 11.1 - 12.0 */
+	background: -moz-linear-gradient(rgba(0,0,0,0), rgba(37,160,217,0.6)); /* Firefox 3.6 - 15 */
+	position: absolute;
+	width: 100%;
+	height: 70%;
+	bottom: 0;
+}
+.selectModulehead{
+	position:fixed;
+	top: 30px;
+	left: 0;
+	right: 0;
+	height: 120px;
+	z-index: 10;
+}
+.selectModuleLogo{
+	background:url(../images/logo.png) no-repeat center;
+	width:55px;
+	height: 50px;
+	margin: 0 auto;
+}
+.selectModuleTitle{
+	font-size:25px;
+	text-align: center;
+	color: #ffffff;
+	height: 45px;
+	line-height: 50px;
+	overflow: hidden;
+}
+.selectModuleTitleEn{
+	font-size:10px;
+	color: #ffffff;
+	text-align: center;
+}
+.selectModuleContent {
+	position: absolute;
+	top: 150px;
+	left: 0;
+	width:880px;
+	margin: 0 auto;
+	right: 0;
+	overflow: hidden;
+	bottom: 70px;
+	transition: all ease 200ms;
+	-webkit-transition: all ease 200ms;
+	-ms-transition: all ease 200ms;
+	-moz-transition: all ease 200ms;
+	-o-transition: all ease 200ms;
+}
+
+.selectModuleCopyright {
+	position: absolute;
+	left: 0;
+	width: 100%;
+	overflow: hidden;
+	bottom: 0px;
+	height: 60px;
+}
+
+.selectModuleCopyrightText {
+	position: absolute;
+	left: 0px;
+	width: 100%;
+	bottom: 0px;
+	height: 35px;
+}
+
+.copyrightTstatus {
+	position: relative;
+	margin: 0 auto;
+	height: 25px;
+	width: 20%;
+}
+
+.copyrightArrawLeft {
+	position: absolute;
+	top: 0;
+	left: 0px;
+	width: 40%;
+	height: 25px;
+}
+
+.copyrightArrawRight {
+	position: absolute;
+	top: 0;
+	right: 0px;
+	width: 40%;
+	height: 25px;
+}
+
+.copyrightArrawLeft .arrawDiv {
+	width: 0;
+    height: 0;
+	float: right;
+    border-bottom: 25px solid #000000;
+    border-left: 25px solid transparent;
+	opacity: 0.2;
+}
+.copyrightArrawRight .arrawDiv {
+	width: 0;
+    height: 0;
+	float: left;
+    border-bottom: 25px solid #000000;
+    border-right: 25px solid transparent;
+	opacity: 0.2;
+}
+
+.selectModuleCopyrightValue {
+	position: absolute;
+	font-size: 12px;
+	color: #ffffff;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	line-height: 35px;
+	text-align: center;
+	z-index: 10;
+	user-select:none;
+}
+
+.selectModuleCopyrightBg {
+	position: absolute;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	opacity: 0.2;
+	background: #000000;
+	z-index: 0;
+}
+
+.copyrightTstatusBg {
+	position: absolute;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 0;
+	background: #000000;
+	opacity: 0.2;
+}
+
+.copyrightTstatusBar {
+	position: absolute;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 1;
+	text-align: center;
+	line-height: 30px;
+	color: #ffffff;
+}
+
+.selectModuleFrame {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	left: 0px;
+	top: 0px;
+	z-index: 1;
+	transition: all ease 200ms;
+	-webkit-transition: all ease 200ms;
+	-ms-transition: all ease 200ms;
+	-moz-transition: all ease 200ms;
+	-o-transition: all ease 200ms;
+}
+
+.selectModuleNode {
+	position: absolute;
+	left: 10px;
+	right: 10px;
+	top:10px;
+	bottom: 10px;
+	background: linear-gradient(#5c626a,#868b91);
+	transition: all ease 200ms;
+	-webkit-transition: all ease 200ms;
+	-ms-transition: all ease 200ms;
+	-moz-transition: all ease 200ms;
+	-o-transition: all ease 200ms;
+}
+
+.selectModuleNodeFrame {
+	position: relative;
+	width: 220px;
+	height: 130px;
+	float: left;
+	margin-top: 20px;
+	cursor: pointer;
+	transition: all ease 200ms;
+	-webkit-transition: all ease 200ms;
+	-ms-transition: all ease 200ms;
+	-moz-transition: all ease 200ms;
+	-o-transition: all ease 200ms;
+}
+.selectModuleNodeFrame:hover{
+	border: 1px #ffffff solid;
+}
+.selectModuleNodeFrame:hover .selectModuleNode{
+	left:5px;
+	top:5px;
+	bottom:5px;
+	right:5px;
+}
+
+.selectModuleNodeLine {
+	position: absolute;
+	bottom: 37px;
+	height: 1px;
+	left: 0px;
+	width: 80%;
+	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK0AAAABCAYAAACscS7WAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyhpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6ODgwODZCRTdDMkE3MTFFNkIzMzNBQzQ1QkJGODY1MDUiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6ODgwODZCRThDMkE3MTFFNkIzMzNBQzQ1QkJGODY1MDUiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo4ODA4NkJFNUMyQTcxMUU2QjMzM0FDNDVCQkY4NjUwNSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo4ODA4NkJFNkMyQTcxMUU2QjMzM0FDNDVCQkY4NjUwNSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PvhSZhQAAABASURBVHjaYvz6+cN/hpEJ/kPxPyzsf1jY2PjI+C8e/l8iaHxsbHx84rjUEquekJvw0YTC4h+BMMUW/ijxAxBgAF/DcdupH1C6AAAAAElFTkSuQmCC") no-repeat;
+}
+
+.selectModuleNodeName {
+	position: absolute;
+	left: 0px;
+	width: 100%;
+	height: 35px;
+	bottom: 0px;
+	line-height: 30px;
+	text-align: center;
+	z-index: 1;
+	color: #ffffff;
+	font-size: 16px;
+}
+
+.selectModuleNodeFrameDisable .selectModuleNode{
+	
+}
+
+/*图标元素*/
+.selectModuleNodeIcon {
+	margin: 0 auto;
+	height: 50px;
+	width: 50px;
+	margin-top: 10px;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+/*数据统计分析*/
+.statisticAnalysis .selectModuleNodeIcon{
+	background-image:url(../images/module/statisticAnalysis.png);
+}
+.statisticAnalysis .selectModuleNode{
+	background: linear-gradient(#209ed9,#59b7e2);
+}
+/*房屋安全管理*/
+.safetyManagement .selectModuleNodeIcon{
+	background-image: url(../images/module/safetyManagement.png);
+}
+.safetyManagement .selectModuleNode{
+	background: linear-gradient(#6547e4,#8972ea);
+}
+/*房屋征收管理*/
+.houseExpropriation .selectModuleNodeIcon{
+	background-image: url(../images/module/houseExpropriation.png);
+}
+.houseExpropriation .selectModuleNode{
+	background: linear-gradient(#38b2c0,#77cfd3);
+}
+/*地下空间管理*/
+.undergroundSpace .selectModuleNodeIcon{
+	background-image: url(../images/module/undergroundSpace.png);
+}
+.undergroundSpace .selectModuleNode{
+	background: linear-gradient(#ff3daa,#ff6fc1);
+}
+/*物业信息管理*/
+.agreementPremise .selectModuleNodeIcon{
+	background-image: url(../images/module/agreementPremise.png);
+}
+.agreementPremise .selectModuleNode{
+	background: linear-gradient(#587dc4,#819ed3);
+}
+/*房地产市场管理*/
+.realEstateMarket .selectModuleNodeIcon{
+	background-image: url(../images/module/realEstateMarket.png);
+}
+.realEstateMarket .selectModuleNode{
+	background: linear-gradient(#ffa62c,#ffbb5d);
+}
+/*直管公房管理*/
+.publicHouse .selectModuleNodeIcon{
+	background-image: url(../images/module/publicHouse.png);
+}
+.publicHouse .selectModuleNode{
+	background: linear-gradient(#ff3c5c,#ff6f87);
+}
+/*区属国有房产管理*/
+.stateHouse .selectModuleNodeIcon{
+	background-image: url(../images/module/stateHouse.png);
+}
+.stateHouse .selectModuleNode{
+	background: linear-gradient(#c157e4,#d082eb);
+}
+/*违法建设管理*/
+.illegalConstruction .selectModuleNodeIcon{
+	background-image: url(../images/module/illegalConstruction.png);
+}
+.illegalConstruction .selectModuleNode{
+	background: linear-gradient(#11bb4b,#4fd17e);
+}
+/*三二维一体化管理*/
+.integratedManagement .selectModuleNodeIcon{
+	background-image: url(../images/module/integratedManagement.png);
+}
+.integratedManagement .selectModuleNode{
+	background: linear-gradient(#5c626a,#868b91);
+}
+/*移动执法终端*/
+.mobileEnforcement .selectModuleNodeIcon{
+	background-image: url(../images/module/mobileEnforcement.png);
+}
+.mobileEnforcement .selectModuleNode{
+	background: linear-gradient(#5c626a,#868b91);
+}
+/*决策分析移动终端*/
+.decisionAnalysis .selectModuleNodeIcon{
+	background-image: url(../images/module/decisionAnalysis.png);
+}
+.decisionAnalysis .selectModuleNode{
+	background: linear-gradient(#5c626a,#868b91);
+}
+.selectModuleNodeFrameTemplate{
+	display: none;
+}
+.loginFrame {
+	position: fixed;
+	display: none;
+	opacity: 0;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	overflow: hidden;
+	z-index: 5;
+	transition: all ease 200ms;
+	-webkit-transition: all ease 200ms;
+	-ms-transition: all ease 200ms;
+	-moz-transition: all ease 200ms;
+	-o-transition: all ease 200ms;
+}
+
+.loginFrameBg {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	background: #000000;
+	opacity: 0.05;
+	z-index: 1;
+}
+.loginBox {
+	position: absolute;
+	display: none;
+	opacity: 0;
+	width: 300px;
+	height: 360px;
+	left:0;
+	right: 0;
+	top: 300px;
+	border-radius: 20px;
+	background:linear-gradient(rgba(255,255,255,0.9),rgba(255,255,255,0.5));
+	z-index: 2;
+	margin: 0 auto;
+	filter: blur(0px);
+	transform: scale(1);
+	box-shadow: rgba(0,0,0,0.5) 0 10px 30px;
+	transition: all ease 200ms;
+	-webkit-transition: all ease 200ms;
+	-ms-transition: all ease 200ms;
+	-moz-transition: all ease 200ms;
+	-o-transition: all ease 200ms;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+.loginBox.loginLoading{
+	background-color: rgba(255,255,255,0.6);
+	background-image:url(../../../images/public/loading.gif);
+	background-repeat: no-repeat;
+	background-position: center;
+}
+.loginBox.loginLoading *{
+	display:none;
+}
+.loginTitle {
+	height: 65px;
+	line-height: 65px;
+	font-size: 22px;
+	text-align: center;
+}
+.loginInputBox {
+	position:relative;
+	height: 80px;
+}
+
+.loginLabel {
+	height: 25px;
+	line-height: 25px;
+	position: absolute;
+	left: 30px;
+	right: 30px;
+}
+.loginContent {
+	position: absolute;
+	top: 25px;
+	left: 30px;
+	right: 30px;
+}
+.loginContent input{
+	width: 100%;
+	border: none;
+	height: 40px;
+	border-radius: 40px;
+	line-height: 38px;
+	font-size: 14px;
+	padding: 0 10px;
+}
+.loginCheckBoxRemind {
+	padding-left: 20px;
+	height: 20px;
+	line-height: 20px;
+	margin-left: 30px;
+	background: url(../images/checkboxstatus.png) no-repeat top left;
+	cursor: pointer;
+}
+.loginCheckBoxRemind.checked{
+	background: url(../images/checkboxstatus.png) no-repeat bottom left;
+}
+
+/*显示登录*/
+.showLogin .selectModuleContent{
+	filter: blur(10px);
+	-webkit-filter: blur(10px);
+	-ms-filter: blur(10px);
+	-moz-filter: blur(10px);
+	-o-filter: blur(10px);
+	-webkit-transform:scale(0.9);
+	-ms-transform:scale(0.9);
+	-moz-transform:scale(0.9);
+	-o-transform:scale(0.9);
+	transform:scale(0.9);
+}
+.showLogin .loginFrame{
+	display: block;
+	opacity: 1;
+}
+.showLogin .loginBox{
+	top: 160px;
+	display: block;
+	opacity: 1;
+}
+.loginButton {
+	position: absolute;
+	left: 30px;
+	right: 30px;
+	bottom: 40px;
+	height: 40px;
+}
+
+.loginSubmit {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	line-height: 40px;
+	border-radius: 40px;
+	background: #3191C3;
+	color: #ffffff;
+	cursor: pointer;
+	text-align: center;
+}
+.loginSubmit:hover{
+	background: #0770AE;
+}

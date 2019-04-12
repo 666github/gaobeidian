@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>添加用户</title>
+    <link type="text/css" rel="stylesheet" href="/style/public/classly.css">
+    <link type="text/css" rel="stylesheet" href="/style/public/public.css">
+    <link type="text/css" rel="stylesheet" href="/style/fontIcon/font-awesome/css/font-awesome.min.css">
+    <link type="text/css" rel="stylesheet" href="/pages/safetyManagement/index/css/jquery.selectbox.statistic.css" />
+    <link type="text/css" rel="stylesheet" href="css/user.css">
+    <link type="text/css" rel="stylesheet" href="/javascript/plugin/animateCss/animate.min.css">
+    <link type="text/css" rel="stylesheet" href="/javascript/plugin/datetimepicker/jquery.datetimepicker.css">
+    <script language="javascript" src="/javascript/jquery/jquery.min.js"></script>
+    <script language="javascript" src="../../javascript/plugin/store/store.legacy.min.js"></script>
+    <script language="javascript" src="/javascript/public/public.js"></script>
+    <script language="javascript" src="../../javascript/plugin/websocket/MyWebSocket.js"></script>
+    <script language="javascript" src="../../javascript/plugin/md5/md5.min.js"></script>
+    <script language="javascript" src="../../javascript/public/webpublic.js"></script>
+    <script language="javascript" src="/javascript/plugin/selectbox/jquery.selectbox.js"></script>
+    <script language="javascript" src="js/user.js"></script>
+    <script language="javascript" src="js/statisticEcharts.min.js"></script>
+    <script language="javascript" src="/javascript/plugin/datetimepicker/jquery.datetimepicker.js"></script>
+</head>
+<body>
+    <div class="boxBG webmain">
+        <div class="pageApp">
+            <div class="loadingStatus hide">
+            </div>
+            <div class="alertDiv hide">
+                <div class="alertContent">
+                    <p class="alertMsg"></p>
+                    <input type="button" value="确定" onclick="$('.alertDiv').fadeOut();" />
+                </div>
+            </div>
+            <div class="boxClose">
+                <div class="boxCloseImg">
+                </div>
+            </div>
+            <div class="boxTitleFrame">
+                <div class="titleBox">
+                    <div class="titleBoxLeft">
+                    </div>
+                    <div class="titleBoxValue">
+                        添加用户</div>
+                </div>
+            </div>
+            <div class="orderByNavFrame">
+                <!--<div class="titleBox">请选择筛选条件</div>-->
+            </div>
+            <div class="chartFrame showMask">
+                <table class="useradd">
+                    <tbody>
+                        <tr>
+                            <td class="tdL">
+                                用户名：
+                            </td>
+                            <td class="tdR">
+                                <input class="username" type="text" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tdL">
+                                全名：
+                            </td>
+                            <td class="tdR">
+                                <input class="fullname" type="text" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                &nbsp;
+                            </td>
+                            <td>
+                                <input class="btnSubmit" type="button" value="添加" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
