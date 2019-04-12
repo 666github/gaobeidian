@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+		p{width: 50px;height: 50px;background-color: red;}
+		</style>
+	</head>
+	<link rel="stylesheet" href="css/animate.css">
+	<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+	<body>
+		<div id="box">
+			<input type="text" v-model="show">
+			<transition-group enter-active-class="zoomInLeft" leave-active-class="zoomOutRight">
+			<p  class="animated" v-for="(val,index) in lists" :key="index+1">{{val}}</p>
+			</transition-group>
+		</div>
+		<div id="app" @click="foo()">ss</div>
+	</body>
+	<script type="text/javascript">
+	var vm=new Vue({
+		el:'#box',
+		data:{
+			a:1,
+			show:'',
+			list:['半壁店','八里庄','高井','高碑店']
+		},
+		methods: {
+    plus: function () {//方法中的 this 自动绑定为 Vue 实例。不应该使用箭头函数来定义 method 函数(还有watcher 函数),箭头函数绑定了父级作用域的上下文，所以 this 将不会按照期望指向 Vue 实例，this.a 将是 undefined
+      this.a++
+    }
+  },
+		computed: {//methods和computed里面不要使用箭头函数
+			lists:function(){//在computed中使用箭头函数的话，会导致this指向的不是整个的vueComponent;此时使用匿名函数的形式就可以解决，this指向了vueComponent;或者使用对象的形式，用set()、get()方法也不会出现问题
+				var arr=[];console.log(this)
+				this.list.forEach(function(val){//非箭头函数需要绑定this
+					if(val.indexOf(this.show)!=-1){
+						arr.push(val);
+					}			
+				}.bind(this));
+				// this.list.forEach(val => {
+				// 	if(val.indexOf(this.show)!=-1){
+				// 		arr.push(val)
+				// 	}
+				// });
+				return arr;
+			},
+			aPlus: {//所有 getter 和 setter 的 this 上下文自动地绑定为 Vue 实例。
+				get: function () {
+					return this.a + 1
+				},
+				set: function (v) {
+					this.a = v - 1
+				}
+			}
+		}
+	})
+	// 所有的生命周期钩子自动绑定 this 上下文到实例中，因此你可以访问数据，对属性和方法进行运算。这意味着你不能使用箭头函数来定义一个生命周期方法 
+	// 节制地使用 $parent 和 $childre，推荐用 props 和 events 实现父子组件通信
+	// 有相同父元素的子元素必须有独特的 key。重复的 key 会造成渲染错误。
+	</script>
+</html>
