@@ -9,11 +9,11 @@ var GaoBeiDianBaseMap_1954_V_C_url = urlPrefix + "GaoBeiDian_1954_V_C/MapServer"
 var GaoBeiDianBaseMap_DZDT_url = urlPrefix + "GaoBeiDian_dzdt/MapServer";
 var GaoBeiDianBaseMap_QDR_url = urlPrefix + "GaoBeiDian_qdr/MapServer";
 /*高碑店*/
-var shahebmLayer, ghzhbmLayer, tdlyztghbmLayer, _4_3jqbmlayer, cunlayer, sqlayer,fwlayerGytd,fwlayerJttd,fwlayerFwsj
-    , showdkLayer, symbol_dk_high, attr, __drawToolbar, dkTxtLayer,sqTxtLayer;
+var shahebmLayer, ghzhbmLayer, tdlyztghbmLayer, _4_3jqbmlayer, cunlayer, sqlayer,fwlayerGytd,fwlayerJttd,fwlayerFwsj,dlfblayer
+    , showdkLayer, symbol_dk_high, attr, __drawToolbar, dkTxtLayer,sqTxtLayer,symbol_dk_high2;
 var changed = false;
 var dkIDMap = {};
-var fwIDMap = {},fwIDMap2={},fwIDMapJttd={},fwIDMapFwsj;
+var fwIDMap = {},fwIDMap2={},fwIDMapJttd={},fwIDMapFwsj,dlfbIdMap;
 var ztt = {};
 var renderer = {};
 //图层加载
@@ -99,25 +99,30 @@ SimpleMarkerSymbol, SimpleLineSymbol, SimpleFillSymbol, TextSymbol, Font, LabelC
         //集体土地
         fwlayerJttd = new GraphicsLayer();
 //      fwlayerJttd.minScale = 8000;
-        fwlayerJttd.setOpacity(0.15);
+        fwlayerJttd.setOpacity(0.5);
         var infoTemplate_jttd = new InfoTemplate("<i class='fa fa-fw fa-file'></i>集体土地信息", function click(fea) {
             return clickTD(fea);
         });
         fwlayerJttd.setInfoTemplate(infoTemplate_jttd);
         map.addLayer(fwlayerJttd);
+        //地类分布
+        dlfblayer = new GraphicsLayer();dlfblayer.setOpacity(0.7);
+        var infoTemplate_jttd = new InfoTemplate("<i class='fa fa-fw fa-file'></i>地类分布信息", function click(fea) {
+            return clickDL(fea);
+        });
+        dlfblayer.setInfoTemplate(infoTemplate_jttd);
+        map.addLayer(dlfblayer);
         //房屋数据
         fwlayerFwsj = new GraphicsLayer();
-        fwlayerFwsj.minScale = 8000;fwlayerJttd.setOpacity(0.5);
+//      fwlayerFwsj.minScale = 10000;
         var infoTemplate_jttd = new InfoTemplate("<i class='fa fa-fw fa-file'></i>房屋数据信息", function click(fea) {
             return clickFWSJ(fea);
         });
         fwlayerFwsj.setInfoTemplate(infoTemplate_jttd);
         map.addLayer(fwlayerFwsj);
-        //---
+        
         //添加村名称显示层
         dkTxtLayer = new GraphicsLayer();
-//        dkTxtLayer.minScale = 8000;
-        //dkTxtLayer.setOpacity(0.1);
         map.addLayer(dkTxtLayer);
         //添加社区名称显示层
         sqTxtLayer= new GraphicsLayer();
@@ -132,6 +137,9 @@ SimpleMarkerSymbol, SimpleLineSymbol, SimpleFillSymbol, TextSymbol, Font, LabelC
         //地块高亮显示渲染
         symbol_dk_high = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
             new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color([0, 245, 255]), 5), new Color([0, 255, 0, 1])
+        );
+        symbol_dk_high2 = new SimpleFillSymbol(SimpleFillSymbol.STYLE_NONE,
+            new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color([0, 245, 255]), 5), new Color([255, 255, 0, 0.25])
         );
         //测量工具
         __drawToolbar = new esri.toolbars.Draw(map);
@@ -323,15 +331,42 @@ function mapClickBuild(event, Polygon, Graphic) {
             });
         }
     });
+    websocket.send("JsonGetAllGBDDLFBRequest", { sessionid: userData.sessionid }, function (response) {//地类分布
+        if (response.status == "success") {
+            require(["esri/geometry/Extent", "esri/SpatialReference"], function (Extent, SpatialReference) {
+                var data = response.data;
+                dlfbIdMap = {};
+                dlfblayer.clear();
+                for (var index = 0; index < data.length; index++) {
+                    var item = data[index];
+                    var geometry = new Polygon(item.polygon);
+                    //坐标系id转换成数字，原来是字符串
+                    var extent = geometry.getExtent();
+                    if (extent) {
+                        extent = new Extent(extent.xmin, extent.ymin, extent.xmax, extent.ymax, new SpatialReference({ wkid: 2436 }));
+                        geometry.extent = extent;
+                        geometry.setSpatialReference(new SpatialReference({ wkid: 2436 }));
+                        geometry.setCacheValue("_extent", extent);
+                        var graphic = new Graphic(geometry);
+                        graphic.setAttributes(item.dlfb);
+						dlfbIdMap[item.OBJECTID] = graphic;
+                        dlfblayer.add(graphic);
+                    }
+                }
+                renderDlfbLayerShow("地类分布");
+            });
+        }
+    });
    //房屋筛选事件
 	var fwsxSelect=()=>{
-		var fwsxFormCun=$(".fwsxFormCun"),fwsxFormCunInput= $(".fwsxFormCunInput"),
-		fwsxFormSq=$(".fwsxFormSq"),fwsxFormSqInput= $(".fwsxFormSqInput"),
-//		fwsjFormDk=$(".fwsjFormDk"),fwsjFormYt=$(".fwsjFormYt"),fwsjFormYt2=$(".fwsjFormYt2");
+		var fwsxFormCun=$(".fwsxFormCun"),
+		fwsxFormCunInput= $(".fwsxFormCunInput"),
+		fwsxFormSq=$(".fwsxFormSq"),
+		fwsxFormSqInput= $(".fwsxFormSqInput"),
 		fwsjFormDk=$(".fwsjFormDk"),fwsjFormDkInput= $(".fwsjFormDkInput"),
 		fwsjFormYt=$(".fwsjFormYt"),fwsjFormYtInput= $(".fwsjFormYtInput"),
 		fwsjFormDk2=$(".fwsjFormDk2"),fwsjFormDk2Input= $(".fwsjFormDk2Input");
-		var strSq="",strCun=''; var strDk='',strYt='';    				
+		var strSq="",strCun=''; var strDk='',strYt='',strDk2='';    				
 	    layui.use(['layer','form'],function(){
 	    	var layer=layui.layer,form=layui.form;
 			websocket.send("JsonGetFWStatisticsRequest_init", $.extend(userData, {}), function (_json) {
@@ -344,7 +379,7 @@ function mapClickBuild(event, Polygon, Graphic) {
 	            for (var i = 0; i < _json.data[1].length; i++) {
 	            	if(_json.data[1][i].YT==null)continue;
 //	                htmlyt +='<option>'+ _json.data[1][i].YT + '</option>';
-					htmlyt +='<input type="checkbox" name="" lay-skin="primary" title="'+ _json.data[1][i].YT +'" >'
+					htmlyt +='<input type="checkbox" name="" lay-skin="primary" title="'+ _json.data[1][i].YT +'" >';
 	                strYt+=_json.data[1][i].YT+',';
 	            }
 	            for (var i = 0; i < _json.data[2].length; i++) {
@@ -352,6 +387,7 @@ function mapClickBuild(event, Polygon, Graphic) {
 //	                htmldk +='<option>'+ _json.data[2][i].DLMC + '</option>';
 					htmldk +='<input type="checkbox" name="" lay-skin="primary" title="'+ _json.data[2][i].DLMC +'" >';
 	                strDk+=_json.data[2][i].DLMC+',';
+	                strDk2+=_json.data[2][i].DLMC+',';
 	            }
 	            for (var i = 0; i < _json.data[3].length; i++) {
 	            	if(_json.data[3][i].SQMC==null)continue;
@@ -366,32 +402,34 @@ function mapClickBuild(event, Polygon, Graphic) {
 	            form.render();
 	        });
 			//村选择
-	        fwsxFormCun.focus(function(){
-				fwsxFormCunInput.show();
-				fwsxFormSqInput.hide();
-			});
-			fwsxFormCunInput.hover(function(){
-				fwsxFormCunInput.show();
-			},function(){
-				fwsxFormCunInput.hide();
-				fwsxFormCun.blur();//[1].innerText
-				var spantexts=fwsxFormCunInput.find('.layui-form-checked span');
-				var strs='';
-				spantexts.each(function(x){
-					strs+=spantexts[x].innerText+',';
+	        var fwsxChoiceCun=function(fwsxFormCun,fwsxFormCunInput,fwsxFormSqInput){
+	        	fwsxFormCun.focus(function(){
+					fwsxFormCunInput.show();
+					fwsxFormSqInput.hide();
 				});
-				strs=strs.slice(0,-1);
-				fwsxFormCun.val(strs);
-				websocket.send("JsonGetFWStatisticsRequest_initByCMC", $.extend(userData, {CMC:strs}), function (_json) {
-		            var htmlsq ='';		            
-		            for (var i = 0; i < _json.data.length; i++) {
-		            	if(_json.data[i].SQMC==null)continue;
-		                htmlsq +='<input type="checkbox" name="" lay-skin="primary" title="'+ _json.data[i].SQMC +'" >';
-		            }
-		            fwsxFormSqInput.html(htmlsq);
-		            form.render();
-		       });
-			})
+				fwsxFormCunInput.hover(function(){
+					fwsxFormCunInput.show();
+				},function(){
+					fwsxFormCunInput.hide();
+					fwsxFormCun.blur();//[1].innerText
+					var spantexts=fwsxFormCunInput.find('.layui-form-checked span');
+					var strs='';
+					spantexts.each(function(x){
+						strs+=spantexts[x].innerText+',';
+					});
+					strs=strs.slice(0,-1);
+					fwsxFormCun.val(strs);
+					websocket.send("JsonGetFWStatisticsRequest_initByCMC", $.extend(userData, {CMC:strs}), function (_json) {
+			            var htmlsq ='';		            
+			            for (var i = 0; i < _json.data.length; i++) {
+			            	if(_json.data[i].SQMC==null)continue;
+			                htmlsq +='<input type="checkbox" name="" lay-skin="primary" title="'+ _json.data[i].SQMC +'" >';
+			            }
+			            fwsxFormSqInput.html(htmlsq);
+			            form.render();
+			       });
+				})
+	        }
 			//社区选择
 			var fwsxChoice=function(fwsjInput,fwsjDiv){//房屋筛选下拉封装
 				fwsjInput.focus(function(){
@@ -410,123 +448,148 @@ function mapClickBuild(event, Polygon, Graphic) {
 					fwsjInput.val(strs.slice(0,-1));
 				});
 			}
+			fwsxChoiceCun(fwsxFormCun,fwsxFormCunInput,fwsxFormSqInput);//村选择
 			fwsxChoice(fwsxFormSq,fwsxFormSqInput);//社区选择
 			fwsxChoice(fwsjFormDk,fwsjFormDkInput);
 			fwsxChoice(fwsjFormYt,fwsjFormYtInput);//用途选择		
 			fwsxChoice(fwsjFormDk2,fwsjFormDk2Input);//用途筛选2
-			//用途图层筛选
-//		    form.on('select(fwsjFormYt2)',function(data){
-//		    	var dkValue=$(".fwsjFormYt2").val();
-//		    	websocket.send("JsonGetAllGBDFWRequest", { sessionid: userData.sessionid }, function (response) {//房屋数据 JsonGetAllGBDFWRequest
-//			        if (response.status == "success") {
-//			            require(["esri/geometry/Extent", "esri/SpatialReference"], function (Extent, SpatialReference) {
-//			                var data = response.data;
-//			                fwIDMapFwsj = {};
-//			                fwlayerFwsj.clear();
-//			                for (var index = 0; index < data.length; index++) {
-//			                    if(data[index].fw.YT!==dkValue && dkValue!=="用途")continue;
-//		                    	var item = data[index];debugger
-//			                    var geometry = new Polygon(item.polygon);
-//			                    //坐标系id转换成数字，原来是字符串
-//			                    var extent = geometry.getExtent();
-//			                    if (extent) {
-//			                        extent = new Extent(extent.xmin, extent.ymin, extent.xmax, extent.ymax, new SpatialReference({ wkid: 2436 }));
-//			                        geometry.extent = extent;
-//			                        geometry.setSpatialReference(new SpatialReference({ wkid: 2436 }));
-//			                        geometry.setCacheValue("_extent", extent);
-//			                        var graphic = new Graphic(geometry);
-//			                        graphic.setAttributes(item.fw);
-//									fwIDMapFwsj[item.OBJECTID] = graphic;
-//			                        fwlayerFwsj.add(graphic);
-//			                    }
-//
-//			                }
-//			                renderFWLayerShowFwsj("房屋数据");//房屋图例
-//			            });
-//			        }
-//		    	}) 
-//		    })
 	    })
-	    //房屋图层筛选
-	    $("#fwsxBtn,#fwsxTjBtn").hover(function(){
-	    	fwsxFormCunInput.hide();fwsxFormSqInput.hide(); fwsjFormDkInput.hide(); fwsjFormYtInput.hide();
-	    	$(".fwsxFormParent .fwsxForm>input").blur();
-	    })
-	    $("#fwsxBtn").click(function(){//社区可以为空（社区为空按村查，其他为空默认为所有）
-	    	var sxCun=($(".fwsxFormCun").val()==''?strCun.slice(0,-1):$(".fwsxFormCun").val()),sxSq=$(".fwsxFormSq").val(),
-	    		sxTd=$(".fwsjFormTd option:selected").val(),
-	    		sxDk=($(".fwsjFormDk").val()==''?strDk.slice(0,-1):$(".fwsjFormDk").val()),
-	    		sxYt=($(".fwsjFormYt").val()==''?strYt.slice(0,-1):$(".fwsjFormYt").val());
-	    	websocket.send("JsonGetAllGBDFWRequest", { sessionid: userData.sessionid }, function (response) {//房屋数据 JsonGetAllGBDFWRequest
+	    //房屋图层筛选	    
+	    var fwDlYtFilter=function(toJson,sxCun,sxSq,sxYt,sxTd,sxDk,emclick,emclicks){
+	    	var mpt = new esri.geometry.Multipoint(new esri.SpatialReference({ wkid:2436 }));
+	    	websocket.send(toJson, $.extend(userData, { CMC:sxCun,SQMC:sxSq,YT:sxYt,TZLX:sxTd,DLMC:sxDk }), function (response) {//房屋数据 JsonGetAllGBDFWRequest		        
 		        if (response.status == "success") {
 		            require(["esri/geometry/Extent", "esri/SpatialReference"], function (Extent, SpatialReference) {
 		                var data = response.data;
 		                fwIDMapFwsj = {};
-		                fwlayerFwsj.clear();		               
+		                fwlayerFwsj.clear();
 		                for (var index = 0; index < data.length; index++) {
-//		                	if(data[index].fw.CMC!==sxCun)continue;
-		                	var fwval=false;
-		                	if(sxSq!=''){//社区不为空，忽略村查社区
-		                		sxSq.split(',').forEach(function(val){
-									if(val==data[index].fw.SQMC){
-										if(sxTd!=''){
-					                		if(sxTd==data[index].fw.TZLX){
-					                			sxYt.split(',').forEach(function(val2){
-													if(val2==data[index].fw.YT){
-														fwval=true;console.log(val,fwval)
-													}
-												})
-					                		}
-					               		}else{
-					               			sxYt.split(',').forEach(function(val2){
-												if(val2==data[index].fw.YT){
-													fwval=true;console.log(val,fwval)
-												}
-											})
-					               		}
-									}
-								})
-								if(!fwval){
-									continue
-								}
-		                	}else{//社区为空，忽略社区查村
-		                		sxCun.split(',').forEach(function(val){
-									if(val==data[index].fw.CMC){ 
-										if(val==data[index].fw.SQMC){
-											if(sxTd!=''){
-						                		if(sxTd==data[index].fw.TZLX){
-						                			sxYt.split(',').forEach(function(val2){
-														if(val2==data[index].fw.YT){
-															fwval=true;console.log(val,fwval)
-														}
-													})
-						                		}
-						               		}else{
-						               			sxYt.split(',').forEach(function(val2){
-													if(val2==data[index].fw.YT){
-														fwval=true;console.log(val,fwval)
-													}
-												})
-						               		}
-										}
-									}
-								})
-		                		if(!fwval){
-		                			continue
-		                		}
-		                	}
-		                	
-//		                	if(sxYt!=''){
-//		                		sxYt.split(',').forEach(function(val){
-//									if(val==data[index].fw.YT){
-//										fwval=true;console.log(val,fwval)
-//									}
-//								})
-//		                		if(!fwval){
-//		                			continue
-//		                		}
-//		                	}
-		                    var item = data[index];		                    
+		                    var item = data[index];
+		                    var geometry = new Polygon(item.polygon);
+		                    //坐标系id转换成数字，原来是字符串
+		                    var extent = geometry.getExtent();
+		                    if (extent) {
+		                        extent = new Extent(extent.xmin, extent.ymin, extent.xmax, extent.ymax, new SpatialReference({ wkid: 2436 }));
+		                        geometry.extent = extent;
+		                        geometry.setSpatialReference(new SpatialReference({ wkid: 2436 }));
+		                        geometry.setCacheValue("_extent", extent);		                        
+		                        var graphic = new Graphic(geometry);
+		                        graphic.setAttributes(item.fw);
+								fwIDMapFwsj[item.OBJECTID] = graphic;
+		                        fwlayerFwsj.add(graphic);
+		                        
+		                        var point = geometry.getExtent().getCenter();
+								mpt.addPoint(point);
+								
+		                    }
+		                }
+		                renderFWLayerShowFwsj("房屋数据筛选");//房屋图例
+		                $(".layerControl input[data='6']").prop('checked', false);		                
+		                fwsxClick();
+		                if(emclicks.find("em").text()=="开"){emclicks.click();}
+		                if(emclick.find("em").text()=="关"){
+		                	emclick.prev().removeAttr("disabled");
+		                	emclicks.prev().attr("disabled",true);
+		                	emclick.click();
+		                }		        
+				        if(mpt.points.length != 0){
+				        	if(mpt.points.length == 1){
+						    	map.setExtent(geometry.getExtent());
+						    }else{
+						    	var ext = mpt.getExtent();
+								map.setExtent(ext.expand(5));
+					    	}
+				        }				        
+				        layui.use(['form'], function () {
+				        var form = layui.form;		
+					        form.on('switch(oc1)', function (data) {
+					            if(data.elem.checked){
+					            	setFwLayerVisibleFwsj(true);
+					            }else{
+					            	setFwLayerVisibleFwsj(false);
+					            }   
+					        });
+					        form.on('switch(oc2)', function (data) {
+					            if(data.elem.checked){
+					            	setFwLayerVisibleFwsj(true);
+					            }else{
+					            	setFwLayerVisibleFwsj(false);
+					            }   
+					        });
+					        form.render();
+		    			});
+		                layuiRemoveLoading();					    
+		            });
+		        }
+	    	});
+	    }
+	    $("#fwsxBtn,#fwsxTjBtn,#fwsxBtn2,#fwsxTjBtn2").hover(function(){
+	    	fwsxFormCunInput.hide();fwsxFormSqInput.hide(); fwsjFormDkInput.hide(); fwsjFormYtInput.hide();
+	    	$(".fwsxFormParent .fwsxForm>input").blur();
+	    });	    
+	    $("#fwsxBtn").click(function(){//社区可以为空（社区为空按村查，其他为空默认为所有）房屋地类图层筛选
+	    	var sxCun=($(".fwsxFormCun").val()==''?strCun.slice(0,-1):$(".fwsxFormCun").val()),sxSq=$(".fwsxFormSq").val(),
+	    		sxTd=$(".fwsjFormTd option:selected").val(),
+	    		sxDk=($(".fwsjFormDk").val()==''?strDk.slice(0,-1):$(".fwsjFormDk").val()),
+	    		sxYt=($(".fwsjFormYt").val()==''?strYt.slice(0,-1):$(".fwsjFormYt").val());	
+	    	var emclick=$(".openClose1").next(),emclick2=$(".openClose2").next();
+	    	layuiLoading();
+	    	fwDlYtFilter("JsonGetFWByQueryRequest",sxCun,sxSq,"",sxTd,sxDk,emclick,emclick2);
+
+	    })
+	    $("#fwsxBtn2").click(function(){//房屋用途图层筛选
+	    	var sxCun=($(".fwsxFormCun").val()==''?strCun.slice(0,-1):$(".fwsxFormCun").val()),sxSq=$(".fwsxFormSq").val(),
+	    		sxTd=$(".fwsjFormTd option:selected").val(),
+	    		sxDk=($(".fwsjFormDk").val()==''?strDk.slice(0,-1):$(".fwsjFormDk").val()),
+	    		sxYt=($(".fwsjFormYt").val()==''?strYt.slice(0,-1):$(".fwsjFormYt").val());	
+	    	var emclick=$(".openClose2").next(),emclick1=$(".openClose1").next();
+	    	layuiLoading();
+	    	fwDlYtFilter("JsonGetFWByQueryRequest",sxCun,sxSq,sxYt,sxTd,"",emclick,emclick1);
+	    })
+	    //房屋筛选统计表单
+	    $("#fwsxTjBtn").click(function(){//房屋地类统计表
+	    	var sxCun=($(".fwsxFormCun").val()==''?strCun.slice(0,-1):$(".fwsxFormCun").val()),
+	    	    sxSq=$(".fwsxFormSq").val(),
+	    		sxTd=$(".fwsjFormTd option:selected").val(),
+	    		sxDk=($(".fwsjFormDk").val()==''?strDk.slice(0,-1):$(".fwsjFormDk").val()),
+	    		sxYt=($(".fwsjFormYt").val()==''?strYt.slice(0,-1):$(".fwsjFormYt").val());console.log(sxTd)
+	    	websocket.send("JsonGetFWStatisticsRequest_ByPara", $.extend(userData, { CMC:sxCun,SQMC:sxSq,YT:sxYt,TZLX:sxTd,DLMC:sxDk }), function (_json) {
+	    		var fwdata1=_json.data[0],fwdata2=_json.data[1];var fwdata=(sxSq==""?sxCun:sxSq);
+				fwYtInfoDl(fwdata2,fwdata);					
+                $(".chartBoxFrame3").removeClass("hide");
+                $(".esriPopup").removeClass('hide');//信息弹框去掉区域查询时添加的hide         		
+	    	})
+	    })
+	    $("#fwsxTjBtn2").click(function(){//房屋用途统计报
+	    	var sxCun=($(".fwsxFormCun").val()==''?strCun.slice(0,-1):$(".fwsxFormCun").val()),
+	    	    sxSq=$(".fwsxFormSq").val(),
+	    		sxTd=$(".fwsjFormTd option:selected").val(),
+	    		sxDk=($(".fwsjFormDk").val()==''?strDk.slice(0,-1):$(".fwsjFormDk").val()),
+	    		sxYt=($(".fwsjFormYt").val()==''?strYt.slice(0,-1):$(".fwsjFormYt").val());
+	    	websocket.send("JsonGetFWStatisticsRequest_ByPara", $.extend(userData, { CMC:sxCun,SQMC:sxSq,YT:sxYt,TZLX:sxTd,DLMC:sxDk }), function (_json) {
+	    		var fwdata1=_json.data[0],fwdata2=_json.data[1];var fwdata=(sxSq==""?sxCun:sxSq);
+				fwYtInfoYt(fwdata1,fwdata);					
+                $(".chartBoxFrame3").removeClass("hide");
+                $(".esriPopup").removeClass('hide');//信息弹框去掉区域查询时添加的hide         		
+	    	})
+	    })
+	    //地类图层筛选
+	    $("#dksxBtn").click(function(){//社区可以为空（社区为空按村查，其他为空默认为所有）
+	    	var sxCun=($(".fwsxFormCun").val()==''?strCun.slice(0,-1):$(".fwsxFormCun").val()),
+	    	    sxSq=$(".fwsxFormSq").val(),
+	    		sxTd=$(".fwsjFormTd option:selected").val(),
+	    		sxDk2=($(".fwsjFormDk2").val()==''?strDk2.slice(0,-1):$(".fwsjFormDk2").val());
+	    	var emclick=$(".openClose3").next();
+	    	layuiLoading();
+	    	var mptdl = new esri.geometry.Multipoint(new esri.SpatialReference({ wkid:2436 }));
+	    	websocket.send("JsonGetDLFBByQueryRequest", $.extend(userData, { CMC:sxCun,SQMC:sxSq,TZLX:sxTd,DLMC:sxDk2 }), function (response) {//地类 JsonGetAllGBDFWRequest
+		        if (response.status == "success") {
+		            require(["esri/geometry/Extent", "esri/SpatialReference"], function (Extent, SpatialReference) {
+		                var data = response.data;debugger
+		                dlfbIdMap = {};
+		                dlfblayer.clear();var indexOne,extentOne;
+		                for (var index = 0; index < data.length; index++) {
+		                    var item = data[index];
 		                    var geometry = new Polygon(item.polygon);
 		                    //坐标系id转换成数字，原来是字符串
 		                    var extent = geometry.getExtent();
@@ -536,42 +599,583 @@ function mapClickBuild(event, Polygon, Graphic) {
 		                        geometry.setSpatialReference(new SpatialReference({ wkid: 2436 }));
 		                        geometry.setCacheValue("_extent", extent);
 		                        var graphic = new Graphic(geometry);
-		                        graphic.setAttributes(item.fw);
-								fwIDMapFwsj[item.OBJECTID] = graphic;
-		                        fwlayerFwsj.add(graphic);
+		                        graphic.setAttributes(item.dlfb);
+								dlfbIdMap[item.OBJECTID] = graphic;
+		                        dlfblayer.add(graphic);
+		                        var point = geometry.getExtent().getCenter();
+								mptdl.addPoint(point);
 		                    }
 		                }
-		                renderFWLayerShowFwsj("房屋数据");//房屋图例
+		                renderDlfbLayerShow("地类分布");
+		                $(".layerControl input[data='8']").prop('checked', false);
+		                dklxClick();
+		                if(emclick.find("em").text()=="关"){
+		                	emclick.prev().removeAttr("disabled");
+		                	emclick.click();
+		                }		        
+				        if(mptdl.points.length != 0){
+				        	if(mptdl.points.length == 1){
+						    	map.setExtent(geometry.getExtent());
+						    }else{
+						    	var ext = mptdl.getExtent();
+								map.setExtent(ext.expand(3));
+					    	}
+				        }				        
+				        layui.use(['form'], function () {
+				        var form = layui.form;		
+					        form.on('switch(oc3)', function (data) {
+					            if(data.elem.checked){
+					            	setFwLayerVisibleDlfb(true);
+					            }else{
+					            	setFwLayerVisibleDlfb(false);
+					            }   
+					        });
+					        form.render();
+		    			});		    			
+		                layuiRemoveLoading();
 		            });
 		        }
 	    	}) 
 	    })
-	    //房屋筛选统计表单
-	    $("#fwsxTjBtn").click(function(){
-	    	var sxCun=($(".fwsxFormCun").val()==''?strCun.slice(0,-1):$(".fwsxFormCun").val()),sxSq=$(".fwsxFormSq").val(),
-	    		sxTd=$(".fwsjFormTd option:selected").val(),
-	    		sxDk=($(".fwsjFormDk").val()==''?strDk.slice(0,-1):$(".fwsjFormDk").val()),
-	    		sxYt=($(".fwsjFormYt").val()==''?strYt.slice(0,-1):$(".fwsjFormYt").val());console.log(sxTd)
-	    	websocket.send("JsonGetFWStatisticsRequest_ByPara", $.extend(userData, { CMC:sxCun,SQMC:sxSq,YT:sxYt,TZLX:sxTd,DLMC:sxDk }), function (_json) {
-	    		var fwdata1=_json.data[0],fwdata2=_json.data[1];var fwdata=(sxSq==""?sxCun:sxSq);
-				fwYtInfo(fwdata1,fwdata2,fwdata);					
-                $(".chartBoxFrame3").removeClass("hide");
-                $(".esriPopup").removeClass('hide');//信息弹框去掉区域查询时添加的hide   
-                $("#clickfw2").removeClass('layui-this');//控制区域查询表单显示，默认显示属性表
-        		$("#clickfw1").addClass('layui-this');       		
-	    	})
-	   })	    
-	    //用途筛选统计表单
+	    //地类类型统计表单
 	    $("#dksxBtn,#dksxTjBtn").hover(function(){fwsjFormDk2Input.hide();fwsjFormDk2.blur();});
 	    $("#dksxTjBtn").click(function(){
-	    	var sxDk2=($(".fwsjFormDk2").val()==''?strDk.slice(0,-1):$(".fwsjFormDk2").val());
-	    	websocket.send("JsonGetFWStatisticsRequest_DKLX", $.extend(userData,{DKLX:sxDk2}), function (_json) {debugger
-	    		var lxData=_json.data;
-				fwYtInfo2(lxData);					
+	    	var sxCun=($(".fwsxFormCun").val()==''?strCun.slice(0,-1):$(".fwsxFormCun").val()),
+	    	    sxSq=$(".fwsxFormSq").val(),
+	    		sxTd=$(".fwsjFormTd option:selected").val(),
+	    		sxDk2=($(".fwsjFormDk2").val()==''?strDk.slice(0,-1):$(".fwsjFormDk2").val());
+	    	websocket.send("JsonGetFWStatisticsRequest_DKLX", $.extend(userData,{CMC:sxCun,SQMC:sxSq,TZLX:sxTd,DKLX:sxDk2}), function (_json) {debugger
+	    		var lxData=_json.data;var cunSqData=(sxSq==""?sxCun:sxSq);
+				tjInfoDl(lxData,cunSqData);					
                 $(".chartBoxFrame4").removeClass("hide");
                 $(".esriPopup").removeClass('hide');//信息弹框去掉区域查询时添加的hide   
 	    	})
 	    })
+		//土地类型图层筛选
+		$("#tdsxBtn").click(function(){//社区可以为空（社区为空按村查，其他为空默认为所有）
+	    	var sxCun=($(".fwsxFormCun").val()==''?strCun.slice(0,-1):$(".fwsxFormCun").val()),
+	    	    sxSq=$(".fwsxFormSq").val(),
+	    		sxTd=$(".fwsjFormTd option:selected").val();
+	    	var emclick=$(".openClose4").next();
+	    	layuiLoading();	    	
+	    	if(sxTd=="国有"){debugger
+	    		var mpttdgy = new esri.geometry.Multipoint(new esri.SpatialReference({ wkid:2436 }));
+	    		websocket.send("JsonGetGYTDByQueryRequest", $.extend(userData,{CMC:sxCun,SQMC:sxSq,TZLX:sxTd}), function (response) {//国有土地
+			        if (response.status == "success") {
+			            require(["esri/geometry/Extent", "esri/SpatialReference"], function (Extent, SpatialReference) {
+			                var data = response.data;
+			                fwIDMapJttd = {};
+			                fwlayerJttd.clear();
+			                fwIDMap2 = {};
+			                fwlayerGytd.clear();
+//			                var indexOne,extentOne;
+			                for (var index = 0; index < data.length; index++) {
+			                    var item = data[index];
+			                    var geometry = new Polygon(item.polygon);
+			                    //坐标系id转换成数字，原来是字符串
+			                    var extent = geometry.getExtent();
+			                    if (extent) {
+			                        extent = new Extent(extent.xmin, extent.ymin, extent.xmax, extent.ymax, new SpatialReference({ wkid: 2436 }));
+			                        geometry.extent = extent;
+			                        geometry.setSpatialReference(new SpatialReference({ wkid: 2436 }));
+			                        geometry.setCacheValue("_extent", extent);
+			                        var graphic = new Graphic(geometry);
+			                        graphic.setAttributes(item.gy);
+									fwIDMap2[item.OBJECTID] = graphic;
+			                        fwlayerGytd.add(graphic);
+			                        var point = geometry.getExtent().getCenter();
+									mpttdgy.addPoint(point);
+			                    }
+			                }
+			                renderFWLayerShow2("国有界线");
+			                $(".layerControl input[data='3'],input[data='4'],input[data='5']").prop('checked', false);
+			                tdlxClick();
+			                if(emclick.find("em").text()=="关"){
+			                	emclick.prev().removeAttr("disabled");
+			                	emclick.click();
+			                }
+			                if(mpttdgy.points.length != 0){
+					        	if(mpttdgy.points.length == 1){
+							    	map.setExtent(geometry.getExtent());
+							    }else{
+							    	var ext = mpttdgy.getExtent();
+									map.setExtent(ext.expand(1.5));
+						    	}
+				        	}
+							layui.use(['form'], function () {
+						        var form = layui.form;		
+						        form.on('switch(oc4)', function (data) {debugger
+						            if(data.elem.checked){
+						            	setFwLayerVisible2(true);
+						            }else{
+						            	setFwLayerVisible2(false);
+						            }           
+						            return false;
+						        });
+						    });
+			                layuiRemoveLoading();
+			            });
+			        }
+			    });
+	    	}
+			if(sxTd=="集体"){
+				var mpttdjt = new esri.geometry.Multipoint(new esri.SpatialReference({ wkid:2436 }));
+				websocket.send("JsonGetJTTDByQueryRequest", $.extend(userData,{CMC:sxCun,SQMC:sxSq,TZLX:sxTd}), function (response) {//集体土地
+			        if (response.status == "success") {
+			            require(["esri/geometry/Extent", "esri/SpatialReference"], function (Extent, SpatialReference) {
+			                var data = response.data;
+			                fwIDMap2 = {};
+			                fwlayerGytd.clear();
+			                fwIDMapJttd = {};
+			                fwlayerJttd.clear();
+//			                var indexOne,extentOne;
+			                for (var index = 0; index < data.length; index++) {
+			                    var item = data[index];
+			                    var geometry = new Polygon(item.polygon);
+			                    //坐标系id转换成数字，原来是字符串
+			                    var extent = geometry.getExtent();
+			                    if (extent) {
+			                        extent = new Extent(extent.xmin, extent.ymin, extent.xmax, extent.ymax, new SpatialReference({ wkid: 2436 }));
+			                        geometry.extent = extent;
+			                        geometry.setSpatialReference(new SpatialReference({ wkid: 2436 }));
+			                        geometry.setCacheValue("_extent", extent);
+			                        var graphic = new Graphic(geometry);
+			                        graphic.setAttributes(item.jt);
+									fwIDMapJttd[item.OBJECTID] = graphic;
+			                        fwlayerJttd.add(graphic);
+			                        var point = geometry.getExtent().getCenter();
+									mpttdjt.addPoint(point);
+//			                        if(index==parseInt(data.length/2)){
+//			                        	indexOne=index;
+//			                        	extentOne=extent
+//			                        }
+			                    }
+			                }
+			                renderFWLayerShowJttd("集体界线");
+			                $(".layerControl input[data='3'],input[data='4'],input[data='5']").prop('checked', false);
+			                tdlxClick();
+//			                emclick.find("em").text("开");
+//			                emclick.addClass("layui-form-onswitch");	
+							if(emclick.find("em").text()=="关"){
+								emclick.prev().removeAttr("disabled");
+								emclick.click();
+							}//使用layui定义switch事件
+							if(mpttdjt.points.length != 0){
+					        	if(mpttdjt.points.length == 1){
+							    	map.setExtent(geometry.getExtent());
+							    }else{
+							    	var ext = mpttdjt.getExtent();
+									map.setExtent(ext.expand(1.5));
+						    	}
+				        	}
+//			                if(indexOne!=undefined){map.setExtent(extentOne.expand(8));}
+//							setFwLayerVisibleJttd(true);
+							layui.use(['form'], function () {
+						        var form = layui.form;		
+						        form.on('switch(oc4)', function (data) {debugger
+						            if(data.elem.checked){
+					    				setFwLayerVisibleJttd(true);
+						            }else{
+					    				setFwLayerVisibleJttd(false);
+						            }           
+						            return false;
+						        });
+						    });
+			                layuiRemoveLoading();
+			            });
+			        }
+			    }); 
+			}
+			if(sxTd==""){
+				websocket.send("JsonGetGYTDByQueryRequest", $.extend(userData,{CMC:sxCun,SQMC:sxSq,TZLX:"国有"}), function (response) {//国有土地
+			        if (response.status == "success") {debugger
+			            require(["esri/geometry/Extent", "esri/SpatialReference"], function (Extent, SpatialReference) {
+			                var data = response.data;
+			                fwIDMap2 = {};
+			                fwlayerGytd.clear();
+//			                var indexOne,extentOne;
+			                for (var index = 0; index < data.length; index++) {
+			                    var item = data[index];
+			                    var geometry = new Polygon(item.polygon);
+			                    //坐标系id转换成数字，原来是字符串
+			                    var extent = geometry.getExtent();
+			                    if (extent) {
+			                        extent = new Extent(extent.xmin, extent.ymin, extent.xmax, extent.ymax, new SpatialReference({ wkid: 2436 }));
+			                        geometry.extent = extent;
+			                        geometry.setSpatialReference(new SpatialReference({ wkid: 2436 }));
+			                        geometry.setCacheValue("_extent", extent);
+			                        var graphic = new Graphic(geometry);
+			                        graphic.setAttributes(item.gy);
+									fwIDMap2[item.OBJECTID] = graphic;
+			                        fwlayerGytd.add(graphic);
+			                    }
+			                }
+			                renderFWLayerShow2("国有界线");
+			                $(".layerControl input[data='3'],input[data='4'],input[data='5']").prop('checked', false);
+			                tdlxClick();		                
+//			                if(indexOne!=undefined){map.setExtent(extentOne.expand(8));}
+//							setFwLayerVisible2(true);
+//			                layuiRemoveLoading();
+			            });
+			        }
+			    });
+			    websocket.send("JsonGetJTTDByQueryRequest", $.extend(userData,{CMC:sxCun,SQMC:sxSq,TZLX:"集体"}), function (response) {//集体土地
+			        if (response.status == "success") {debugger
+			            require(["esri/geometry/Extent", "esri/SpatialReference"], function (Extent, SpatialReference) {
+			                var data = response.data;
+			                fwIDMapJttd = {};
+			                fwlayerJttd.clear();
+//			                var indexOne,extentOne;
+			                for (var index = 0; index < data.length; index++) {
+			                    var item = data[index];
+			                    var geometry = new Polygon(item.polygon);
+			                    //坐标系id转换成数字，原来是字符串
+			                    var extent = geometry.getExtent();
+			                    if (extent) {
+			                        extent = new Extent(extent.xmin, extent.ymin, extent.xmax, extent.ymax, new SpatialReference({ wkid: 2436 }));
+			                        geometry.extent = extent;
+			                        geometry.setSpatialReference(new SpatialReference({ wkid: 2436 }));
+			                        geometry.setCacheValue("_extent", extent);
+			                        var graphic = new Graphic(geometry);
+			                        graphic.setAttributes(item.jt);
+									fwIDMapJttd[item.OBJECTID] = graphic;
+			                        fwlayerJttd.add(graphic);
+			                    }
+			                }
+			                renderFWLayerShowJttd("集体界线");
+			                $(".layerControl input[data='3'],input[data='4'],input[data='5']").prop('checked', false);
+			                tdlxClick();	
+							if(emclick.find("em").text()=="关"){
+								emclick.click();
+								emclick.prev().removeAttr("disabled");
+							}//使用layui定义switch事件
+							setFwLayerVisibleJttd(true);
+							layui.use(['form'], function () {
+						        var form = layui.form;		
+						        form.on('switch(oc4)', function (data) {debugger
+						            if(data.elem.checked){
+						            	setFwLayerVisible2(true);
+					    				setFwLayerVisibleJttd(true);
+				//	    				if(sxCun){$(".layerControl input[data='3'],input[data='4'],input[data='5']").prop('checked', false);}
+						            }else{
+						            	setFwLayerVisible2(false);
+					    				setFwLayerVisibleJttd(false);
+//					    				$(".layerControl input[data='3'],input[data='4'],input[data='5']").prop('checked', false);
+						            }           
+						            return false;
+						        });
+						    });
+			                layuiRemoveLoading();
+			            });
+			        }
+			    });
+			};//判断国有和集体都选择的情况
+//	    	emclick.on("click",function(){//地类类型开关控制
+//	    		if(emclick.find("em").text()=="开"){//关闭按钮	
+//	    			setFwLayerVisible2(false);
+//	    			setFwLayerVisibleJttd(false);
+//	    			emclick.find("em").text("关");
+//		            emclick.removeClass("layui-form-onswitch");
+//	    		}else{
+//	    			setFwLayerVisible2(true);
+//	    			setFwLayerVisibleJttd(true);
+//	    			emclick.find("em").text("开");
+//					emclick.addClass("layui-form-onswitch");
+//	    		}
+//	    	})	    	
+	    })
+		//土地类型统计表单
+	    $("#tdsxTjBtn").click(function(){
+	    	var sxCun=($(".fwsxFormCun").val()==''?strCun.slice(0,-1):$(".fwsxFormCun").val()),
+	    	    sxSq=$(".fwsxFormSq").val(),
+	    		sxTd=$(".fwsjFormTd option:selected").val();
+	    	websocket.send("JsonGetFWStatisticsRequest_TDLX", $.extend(userData,{CMC:sxCun,SQMC:sxSq,TDLX:sxTd}), function (_json) {
+	    		var lxData=_json.data;
+				tjInfoTd(lxData);					
+                $(".chartBoxFrame4").removeClass("hide");
+                $(".esriPopup").removeClass('hide');//信息弹框去掉区域查询时添加的hide   
+	    	})
+	    })
+		//筛选后 图控控制下拉
+		var fwsxClick=function(){//房屋图层筛选  图层控制下拉处	    		
+    		$(".layerControl input[data='6']").on("click",function(){//社区可以为空（社区为空按村查，其他为空默认为所有）
+    			if($(this).is(":checked")){   				
+    				if($(".openClose1").next().find("em").text()=="开"){$(".openClose1").next().click()}
+    				if($(".openClose2").next().find("em").text()=="开"){$(".openClose2").next().click()}
+    				layuiLoading();
+			    	websocket.send("JsonGetAllGBDFWRequest", { sessionid: userData.sessionid }, function (response) {//地类分布
+				        if (response.status == "success") {
+				            require(["esri/geometry/Extent", "esri/SpatialReference"], function (Extent, SpatialReference) {
+				                var data = response.data;
+				                fwIDMapFwsj = {};
+				                fwlayerFwsj.clear();
+				                for (var index = 0; index < data.length; index++) {
+				                    var item = data[index];
+				                    var geometry = new Polygon(item.polygon);
+				                    //坐标系id转换成数字，原来是字符串
+				                    var extent = geometry.getExtent();
+				                    if (extent) {
+				                        extent = new Extent(extent.xmin, extent.ymin, extent.xmax, extent.ymax, new SpatialReference({ wkid: 2436 }));
+				                        geometry.extent = extent;
+				                        geometry.setSpatialReference(new SpatialReference({ wkid: 2436 }));
+				                        geometry.setCacheValue("_extent", extent);
+				                        var graphic = new Graphic(geometry);
+				                        graphic.setAttributes(item.fw);
+										fwIDMapFwsj[item.OBJECTID] = graphic;
+				                        fwlayerFwsj.add(graphic);
+				                    }
+				                }
+				                renderFWLayerShowFwsj("房屋数据");//房屋图例				                
+				                layui.use(['layer','form'],function(){
+				                	var layer=layui.layer,form=layui.form;
+									websocket.send("JsonGetFWStatisticsRequest_init", $.extend(userData, {}), function (_json) {
+							            var htmlcun = '', htmlsq ='',htmldk='',htmlyt='';
+							            for (var i = 0; i < _json.data[0].length; i++) {
+							                htmlcun +='<input type="checkbox" name="" lay-skin="primary" title="'+ _json.data[0][i].CMC +'" >';
+							            }
+							            for (var i = 0; i < _json.data[1].length; i++) {
+							            	if(_json.data[1][i].YT==null)continue;
+											htmlyt +='<input type="checkbox" name="" lay-skin="primary" title="'+ _json.data[1][i].YT +'" >'
+							            }
+							            for (var i = 0; i < _json.data[2].length; i++) {
+							            	if(_json.data[2][i].DLMC==null)continue;
+											htmldk +='<input type="checkbox" name="" lay-skin="primary" title="'+ _json.data[2][i].DLMC +'" >';
+							            }
+							            for (var i = 0; i < _json.data[3].length; i++) {
+							            	if(_json.data[3][i].SQMC==null)continue;
+							                htmlsq +='<input type="checkbox" name="" lay-skin="primary" title="'+ _json.data[3][i].SQMC +'" >';
+							            }
+							            fwsxFormCun.val('');
+							            fwsxFormSq.val('');
+										fwsjFormYt.val('');
+							            fwsjFormDk.val('');
+							            fwsxFormCunInput.html(htmlcun);
+							            fwsxFormSqInput.html(htmlsq);
+										fwsjFormYtInput.html(htmlyt);
+							            fwsjFormDkInput.html(htmldk);	
+							            $(".openClose1,.openClose2").attr("disabled",true);
+							            form.render();
+							            layuiRemoveLoading();
+							        });
+				                })				                
+				            });
+				        }
+				    }); 
+			    }
+    			$(".layerControl input[data='6']").off("click");
+		    })		    	
+	    }
+	    var dklxClick=function(){//地类类型  图层控制下拉	    		
+    		$(".layerControl input[data='8']").click(function(){//社区可以为空（社区为空按村查，其他为空默认为所有）
+    			if($(this).is(":checked")){
+    				if($(".openClose3").next().find("em").text()=="开"){$(".openClose3").next().click()};
+    				layuiLoading();
+			    	websocket.send("JsonGetAllGBDDLFBRequest", { sessionid: userData.sessionid }, function (response) {//地类分布
+				        if (response.status == "success") {
+				            require(["esri/geometry/Extent", "esri/SpatialReference"], function (Extent, SpatialReference) {
+				                var data = response.data;
+				                dlfbIdMap = {};
+				                dlfblayer.clear();
+				                for (var index = 0; index < data.length; index++) {
+				                    var item = data[index];
+				                    var geometry = new Polygon(item.polygon);
+				                    //坐标系id转换成数字，原来是字符串
+				                    var extent = geometry.getExtent();
+				                    if (extent) {
+				                        extent = new Extent(extent.xmin, extent.ymin, extent.xmax, extent.ymax, new SpatialReference({ wkid: 2436 }));
+				                        geometry.extent = extent;
+				                        geometry.setSpatialReference(new SpatialReference({ wkid: 2436 }));
+				                        geometry.setCacheValue("_extent", extent);
+				                        var graphic = new Graphic(geometry);
+				                        graphic.setAttributes(item.dlfb);
+										dlfbIdMap[item.OBJECTID] = graphic;
+				                        dlfblayer.add(graphic);
+				                    }
+				                }
+				                renderDlfbLayerShow("地类分布");				                
+				                layui.use(['layer','form'],function(){
+				                	var layer=layui.layer,form=layui.form;
+									websocket.send("JsonGetFWStatisticsRequest_init", $.extend(userData, {}), function (_json) {
+							            var htmldk='';
+							            for (var i = 0; i < _json.data[2].length; i++) {
+							            	if(_json.data[2][i].DLMC==null)continue;
+											htmldk +='<input type="checkbox" name="" lay-skin="primary" title="'+ _json.data[2][i].DLMC +'" >';
+		
+							            }
+							            fwsjFormDk2.val('');
+							            fwsjFormDk2Input.html(htmldk);
+							            $(".openClose3").attr("disabled",true);
+							            form.render();
+							            layuiRemoveLoading();
+							        });
+				                })
+				            });
+				        }
+				    }); 
+			    }
+		    })		    	
+	    }
+	    var tdlxClick=function(){//土地类型 图层控制下拉
+	    	$(".layerControl input[data='4']").on("click",function(){
+	    		if($(this).is(":checked")){
+	    			if($(".openClose4").next().find("em").text()=="开"){$(".openClose4").next().click()};
+	    			layuiLoading();
+	    			websocket.send("JsonGetAllGBDGYRequest", { sessionid: userData.sessionid }, function (response) {//国有土地
+				        if (response.status == "success") {
+				            require(["esri/geometry/Extent", "esri/SpatialReference"], function (Extent, SpatialReference) {
+				                var data = response.data;
+				                fwIDMap2 = {};
+				                fwlayerGytd.clear();
+				                for (var index = 0; index < data.length; index++) {
+				                    var item = data[index];
+				                    var geometry = new Polygon(item.polygon);
+				                    //坐标系id转换成数字，原来是字符串
+				                    var extent = geometry.getExtent();
+				                    if (extent) {
+				                        extent = new Extent(extent.xmin, extent.ymin, extent.xmax, extent.ymax, new SpatialReference({ wkid: 2436 }));
+				                        geometry.extent = extent;
+				                        geometry.setSpatialReference(new SpatialReference({ wkid: 2436 }));
+				                        geometry.setCacheValue("_extent", extent);
+				                        var graphic = new Graphic(geometry);
+				                        graphic.setAttributes(item.gy);
+										fwIDMap2[item.OBJECTID] = graphic;
+				                        fwlayerGytd.add(graphic);
+				                    }
+				                }
+				                renderFWLayerShow2("国有界线");
+				                layui.use(['layer','form'],function(){
+				                	var layer=layui.layer,form=layui.form;
+						            $(".openClose4").attr("disabled",true);
+						            form.render();
+						            layuiRemoveLoading();
+				               })
+				            });
+				        }
+			    	});
+	    		}
+	    		$(".layerControl input[data='4']").off("click");
+	    	})
+	    	$(".layerControl input[data='5']").on("click",function(){
+	    		if($(this).is(":checked")){
+	    			if($(".openClose4").next().find("em").text()=="开"){$(".openClose4").next().click()};
+	    			layuiLoading();
+	    			websocket.send("JsonGetAllGBDJTRequest", { sessionid: userData.sessionid }, function (response) {//集体土地
+				        if (response.status == "success") {
+				            require(["esri/geometry/Extent", "esri/SpatialReference"], function (Extent, SpatialReference) {
+				                var data = response.data;
+				                fwIDMapJttd = {};
+				                fwlayerJttd.clear();
+				                for (var index = 0; index < data.length; index++) {
+				                    var item = data[index];
+				                    var geometry = new Polygon(item.polygon);
+				                    //坐标系id转换成数字，原来是字符串
+				                    var extent = geometry.getExtent();
+				                    if (extent) {
+				                        extent = new Extent(extent.xmin, extent.ymin, extent.xmax, extent.ymax, new SpatialReference({ wkid: 2436 }));
+				                        geometry.extent = extent;
+				                        geometry.setSpatialReference(new SpatialReference({ wkid: 2436 }));
+				                        geometry.setCacheValue("_extent", extent);
+				                        var graphic = new Graphic(geometry);
+				                        graphic.setAttributes(item.jt);
+										fwIDMapJttd[item.OBJECTID] = graphic;
+				                        fwlayerJttd.add(graphic);
+				                    }
+				                }
+				                renderFWLayerShowJttd("集体界线");	
+				                layui.use(['layer','form'],function(){
+				                	var layer=layui.layer,form=layui.form;
+						            $(".openClose4").attr("disabled",true);
+						            form.render();
+						            layuiRemoveLoading();
+				               })
+				            });
+				        }
+				    });
+	    		}
+	    		$(".layerControl input[data='5']").off("click");
+	    	})
+	    	$(".layerControl input[data='3']").on("click",function(){
+	    		if($(this).is(":checked")){
+	    			if($(".openClose4").next().find("em").text()=="开"){$(".openClose4").next().click()};
+	    			layuiLoading();
+	    			websocket.send("JsonGetAllGBDGYRequest", { sessionid: userData.sessionid }, function (response) {//国有土地
+				        if (response.status == "success") {
+				            require(["esri/geometry/Extent", "esri/SpatialReference"], function (Extent, SpatialReference) {
+				                var data = response.data;
+				                fwIDMap2 = {};
+				                fwlayerGytd.clear();
+				                for (var index = 0; index < data.length; index++) {
+				                    var item = data[index];
+				                    var geometry = new Polygon(item.polygon);
+				                    //坐标系id转换成数字，原来是字符串
+				                    var extent = geometry.getExtent();
+				                    if (extent) {
+				                        extent = new Extent(extent.xmin, extent.ymin, extent.xmax, extent.ymax, new SpatialReference({ wkid: 2436 }));
+				                        geometry.extent = extent;
+				                        geometry.setSpatialReference(new SpatialReference({ wkid: 2436 }));
+				                        geometry.setCacheValue("_extent", extent);
+				                        var graphic = new Graphic(geometry);
+				                        graphic.setAttributes(item.gy);
+										fwIDMap2[item.OBJECTID] = graphic;
+				                        fwlayerGytd.add(graphic);
+				                    }
+				                }
+				                renderFWLayerShow2("国有界线");				                
+				                layuiRemoveLoading();
+				            });
+				        }
+			    	});
+	    			websocket.send("JsonGetAllGBDJTRequest", { sessionid: userData.sessionid }, function (response) {//集体土地
+				        if (response.status == "success") {
+				            require(["esri/geometry/Extent", "esri/SpatialReference"], function (Extent, SpatialReference) {
+				                var data = response.data;
+				                fwIDMapJttd = {};
+				                fwlayerJttd.clear();
+	//			                var indexOne,extentOne;
+				                for (var index = 0; index < data.length; index++) {
+				                    var item = data[index];
+				                    var geometry = new Polygon(item.polygon);
+				                    //坐标系id转换成数字，原来是字符串
+				                    var extent = geometry.getExtent();
+				                    if (extent) {
+				                        extent = new Extent(extent.xmin, extent.ymin, extent.xmax, extent.ymax, new SpatialReference({ wkid: 2436 }));
+				                        geometry.extent = extent;
+				                        geometry.setSpatialReference(new SpatialReference({ wkid: 2436 }));
+				                        geometry.setCacheValue("_extent", extent);
+				                        var graphic = new Graphic(geometry);
+				                        graphic.setAttributes(item.jt);
+										fwIDMapJttd[item.OBJECTID] = graphic;
+				                        fwlayerJttd.add(graphic);
+				                    }
+				                }
+				                renderFWLayerShowJttd("集体界线");	
+				                layui.use(['layer','form'],function(){
+				                	var layer=layui.layer,form=layui.form;
+						            $(".openClose4").attr("disabled",true);
+						            form.render();
+						            layuiRemoveLoading();
+				               })
+				            });
+				        }
+				    });
+	    		}	    		
+	    	})
+	    }
+	    var layuiLR;
+	    var layuiLoading = function (){
+	        layui.use(['layer', 'form'], function(){
+                layuiLR = layer.load(1, {
+			  		shade: [0.1,'#fff'] //0.1透明度的白色背景
+				});
+        	});
+		}
+	    var layuiRemoveLoading = function (){
+        	layui.use(['layer', 'form'], function(){
+                var layer = layui.layer
+                layer.close(layuiLR);
+                //调用close方法,关闭全局变量index对应的加载效果
+            });
+		}	    
 	}
 	fwsxSelect();
 }
@@ -602,6 +1206,7 @@ function clickFWSJ(obj) {//房屋数据
     if (!isNaN(parseFloat(dkmj))) dkmj = dkmj.toFixed(2);
     var content = "<p class='fe_Attr mb5'>所属村：<span>" + getFeatureFieldValue(obj.attributes.CMC) + "</span></p>"
         + "<p class='fe_Attr mb5'>所属社区：<span>" + getFeatureFieldValue(obj.attributes.SQMC) + "</span></p>"
+        + "<p class='fe_Attr mb5'>地类名称：<span>" + getFeatureFieldValue(obj.attributes.DLMC) + "</span></p>"
         + "<p class='fe_Attr mb5'>门牌号：<span>" + getFeatureFieldValue(obj.attributes.MPH) + "</span></p>"
         + "<p class='fe_Attr mb5'>层数：<span>" + getFeatureFieldValue(obj.attributes.CS) + "</span></p>"
         + "<p class='fe_Attr mb5'>实际层数：<span>" + getFeatureFieldValue(obj.attributes.SJCS) + "</span></p>"
@@ -610,6 +1215,13 @@ function clickFWSJ(obj) {//房屋数据
         + "<p class='fe_Attr mb5'>土地类别：<span>" + getFeatureFieldValue(obj.attributes.TZLX) + "</span></p>"
         + "<p class='fe_Attr mb5'>房屋用途：<span>" + getFeatureFieldValue(obj.attributes.YT) + "</span></p>"
         + "<p class='fe_Attr mb5'>备注：<span>" + getFeatureFieldValue(obj.attributes.BZ) + "</span></p>";
+    return content;
+}
+function clickDL(obj) {//土地
+    var zdmj = obj.attributes.ZDMJ;
+    if (!isNaN(parseFloat(zdmj))) zdmj = zdmj.toFixed(2);
+    var content = "<p class='fe_Attr mb5'>地类名称：<span>" + getFeatureFieldValue(obj.attributes.DKLX) + "</span></p>"
+        + "<p class='fe_Attr mb5'>占地面积：<span>" + zdmj + "平方米</span></p>"
     return content;
 }
 function getFeatureFieldValue(fv) {
@@ -1023,6 +1635,12 @@ function setFwLayerVisibleFwsj(isShow) {//房屋数据
     legendInfo.setData(dataList);
     legendInfo.show();
 }
+function setFwLayerVisibleDlfb(isShow) {//地类分布
+    dlfblayer.setVisibility(isShow);
+    var dataList = CallbackForLegend();
+    legendInfo.setData(dataList);
+    legendInfo.show();
+}
 //---房屋数据筛选
 function setFwLayerVisibleFwsx(fwsx,isShow) {//房屋数据筛选
     fwlayerFwsj.setVisibility(false);
@@ -1180,7 +1798,7 @@ function renderFWLayerShowFwsj(content) {//房屋数据
     fwlayerFwsj.redraw();
     fwlegendsettingFwsj.length = 0;
     var render = renderer[content];
-    if (content == '房屋数据') {
+    if (content == '房屋数据' || content == '房屋数据筛选') {
         for (var index = 0; index < render.infos.length; index++) {
             var info = render.infos[index];
             var color = info.symbol.color;
@@ -1201,13 +1819,48 @@ function renderFWLayerShowFwsj(content) {//房屋数据
         var border = "solid " + Math.round(render.symbol.outline.width, 1) + "px rgba(" + oClolor.r + ", " + oClolor.g + ", " + oClolor.b + "," + oClolor.a + ")";
         fwlegendsettingFwsj.push({ color: [color.r, color.g, color.b, color.a], name: '房屋', border: border });
     }
+    if(content == '房屋数据'){
+    	var dataList = CallbackForLegend();
+	    legendInfo.setData(dataList);
+	    legendInfo.show();
+    }
+}
+function renderDlfbLayerShow(content) {//地类分布
+    var ly = ztt[content];
+    dlfblayer.setRenderer(renderer[content]);
+    dlfblayer.show();//--下方是图例绘制代码
+    fwlegendsettingDlfb.length = 0;
+    var render = renderer[content];
+    if (content == '地类分布') {
+        for (var index = 0; index < render.infos.length; index++) {
+            var info = render.infos[index];
+            var color = info.symbol.color;
+            var oClolor = info.symbol.outline.color;
+            var border = "solid " + Math.round(info.symbol.outline.width, 1) + "px rgba(" + oClolor.r + ", " + oClolor.g + ", " + oClolor.b + "," + oClolor.a + ")";
+//          var border = "solid " + Math.round(info.symbol.outline.width, 1) + "px rgba(" + oClolor.r + ", " + oClolor.g + ", " + oClolor.b + "," + oClolor.a + ")";
+            fwlegendsettingDlfb.push({ color: [color.r, color.g, color.b, color.a], name: '（地类分布）' + info.label, border: border });
+        }
+        if (render.defaultSymbol != null) {
+            var color = render.defaultSymbol.color;
+            var oClolor = render.defaultSymbol.outline.color;
+            var border = "solid " + Math.round(info.symbol.outline.width, 1) + "px rgba(" + oClolor.r + ", " + oClolor.g + ", " + oClolor.b + "," + oClolor.a + ")";
+//          var border = "solid " + Math.round(info.symbol.outline.width, 1) + "px rgba(" + oClolor.r + ", " + oClolor.g + ", " + oClolor.b + "," + oClolor.a + ")";
+            fwlegendsettingDlfb.push({ color: [color.r, color.g, color.b, color.a], name: '（地类分布）' + render.defaultLabel, border: border });
+        }
+    }
+    else if (render.symbol != null) {
+        var color = render.symbol.color;
+        var oClolor = render.symbol.outline.color;
+        var border = "solid " + Math.round(render.symbol.outline.width, 1) + "px rgba(" + oClolor.r + ", " + oClolor.g + ", " + oClolor.b + "," + oClolor.a + ")";
+        fwlegendsettingDlfb.push({ color: [color.r, color.g, color.b, color.a], name: '地类分布', border: border });
+    }
     var dataList = CallbackForLegend();
     legendInfo.setData(dataList);
     legendInfo.show();
 }
 //数据统计
 function BtnF_0() {//详情说明
-		$('.tbChart').html('<div id="xqsm"  style="height: 350px;"></div>');	 
+		$('.tbChart').html('<div id="xqsm"></div>');	 
 		websocket.send("JsonGetFWStatisticsRequest_OneText", $.extend(userData, {}), function (_json) {
 			var smData=_json.data;
             $("#xqsm").html(smData);
@@ -1224,7 +1877,8 @@ function BtnF_1() {//类型统计
                     size: 'sm', //小尺寸的表格
 //                  totalRow:true,
                     limit:8,
-                    page:true,
+//                  page:true,
+					limit:40,
                     cols: [
                             [
                              { field: 'col1', rowspan: "3", "title": "用途", minWidth: 100, align: "center" },
@@ -1252,10 +1906,11 @@ function BtnF_2() {//各社区
                     data: _json.data,
                     size: 'sm', //小尺寸的表格
                     limit:8,
-                    page:true,
+//                  page:true,
+					limit:40,
                     cols: [
                             [
-                             { field: 'col1', rowspan: "3", "title": "社区名称", minWidth: 100 , align: "center" },
+                             { field: 'col1', rowspan: "3", "title": "社区名称", minWidth: 100 , align: "center" ,fixed:'left'},
                              { colspan: 4, "title": "办公", align: "center" },
                              { colspan: 4, "title": "仓储", align: "center" },
                              { colspan: 4, "title": "工业", align: "center" },
@@ -1382,7 +2037,11 @@ function BtnF_2() {//各社区
                             ]
                           ]
                 });
-            });
+            });       
+//          $('.tjt th[data-field="col1"],.tjt td[data-field="col1"]').css({
+//          	'position':"fixed",
+//          	'backgroundColor':'red'
+//          })
         });
     }
     function BtnF_3() {//村明细
@@ -1528,6 +2187,29 @@ function BtnF_2() {//各社区
             });
         });
     };
+    function BtnF_tdCunSq(cun,sxCun,sxSq,sxTd) {//土地按社区
+		$('.tbChart').html('<table class="layui-table" id="tab_4"></table>');
+		websocket.send("JsonGetFWStatisticsRequest_TDLX", $.extend(userData,{CMC:sxCun,SQMC:sxSq,TDLX:sxTd}),  function (_json) {
+            layui.use('table', function () {
+                var table = layui.table;
+	            var cunSqData=(cun=="cun"?{field: 'CMC', "title": "村名称", minWidth: 100, align: "center"}:{field: 'SQMC', "title": "社区名称", minWidth: 100, align: "center"});
+	            var tdlxData=[cunSqData,
+	                            	 { field: 'GYTD', "title": "国有土地", align: "center" },
+	                             	{ field: 'JTTD', "title": "集体土地", align: "center" },
+	                             	{ field: '总计',rowspan: 2, "title": "总计",minWidth: 100 }
+	                            ]
+	            table.render({
+	                elem: '#tab_4',
+	                data: _json.data,
+	                size: 'sm', //小尺寸的表格
+	                limit:40,
+	                cols: [
+	                		tdlxData
+						]
+	            });
+            });
+       });
+    };
  //图标select选项加载
     function initSelectDefuatMessage() {
         websocket.send("JsonGetFWStatisticsRequest_init", $.extend(userData, {}), function (_json) {
@@ -1571,21 +2253,21 @@ function BtnF_2() {//各社区
                     data: ["国有占地面积", "国有建筑面积", "集体占地面积", "集体建筑面积"]
                 },
                 series: [
-        {
-            name: '面积',
-            type: 'pie',
-            radius: '55%',
-            center: ['50%', '60%'],
-            data: [{ value: _json.data.GYZD, name: "国有占地面积" }, { value: _json.data.GYJZ, name: "国有建筑面积" }, { value: _json.data.JTZD, name: "集体占地面积" }, { value: _json.data.JTJZ, name: "集体建筑面积"}],
-            itemStyle: {
-                emphasis: {
-                    shadowBlur: 10,
-                    shadowOffsetX: 0,
-                    shadowColor: 'rgba(0, 0, 0, 0.5)'
-                }
-            }
-        }
-    ]
+			        {
+			            name: '面积',
+			            type: 'pie',
+			            radius: '55%',
+			            center: ['50%', '60%'],
+			            data: [{ value: _json.data.GYZD, name: "国有占地面积" }, { value: _json.data.GYJZ, name: "国有建筑面积" }, { value: _json.data.JTZD, name: "集体占地面积" }, { value: _json.data.JTJZ, name: "集体建筑面积"}],
+			            itemStyle: {
+			                emphasis: {
+			                    shadowBlur: 10,
+			                    shadowOffsetX: 0,
+			                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+			                }
+			            }
+			        }
+			    ]
             };
 
 
@@ -1714,16 +2396,47 @@ function BtnF_2() {//各社区
 	    })
     }
 	//房屋/用途筛选表单
-    function fwYtInfo(fwdata1,fwdata2,fwdata){   	
+    function fwYtInfoDl(fwdata2,fwdata){//房屋地类筛选统计表   	
     	$(".chartBoxClose3").click(function(){$(".chartBoxFrame3").addClass("hide");});
-    	$("#clickfw1").click(function(){
-			$('.sxtjFw .layui-form:first-of-type').removeClass('hide');
-			$('.sxtjFw .layui-form:nth-of-type(2)').addClass('hide');
-    	});
-    	$("#clickfw2").click(function(){
-			$('.sxtjFw .layui-form:first-of-type').addClass('hide');
-			$('.sxtjFw .layui-form:nth-of-type(2)').removeClass('hide');
-    	})
+        layui.use('table', function () {//统计表地类
+            var table = layui.table;
+            var colsListsTb=new Array(),colsListsTh=new Array();
+            let colslistX=fwdata2[0];
+            let fwdataArr=fwdata.split(',');
+            colsListsTh=[{ field:"地类名称",rowspan: 2, title: "地类名称", minWidth: 100, align: "center"}]
+        	for( let x in fwdataArr){
+        		colsListsTh.push({title:fwdataArr[x], align:'center', minWidth: 100,colspan: 2});
+        	}
+        	colsListsTh.push({ field:"总计",rowspan: 1, title: "总计", minWidth: 100, align: "center",colspan: 2})
+        	for( let x in colslistX){
+        		if(x!=="地类名称" && x!=="总计"){colsListsTb.push({field:x, title:x, align:'center', minWidth: 100});}
+        	}
+            table.render({
+                elem: '#fwyt1',
+                data: fwdata2,
+//              page: true, //开启分页
+                size: 'sm', //小尺寸的表格
+                limit:40,
+                cols: [
+                        colsListsTh,
+                        colsListsTb
+					]
+            });
+            $("#clickfw1").html('<span >房屋地类统计表</span>');
+        });
+//      $('.sxtjFw .layui-form:nth-of-type(2)').addClass('hide');
+        $('.chartBoxFrame3 .chartBoxMain').on({//信息窗口拖拽
+			mousedown: function(e){
+			                var el=$(this);
+			                var os = el.offset(); dx = e.pageX-os.left, dy = e.pageY-os.top;
+			                $(document).on('mousemove.drag', function(e){ el.offset({top: e.pageY-dy, left: e.pageX-dx}); });
+			            },
+			mouseup: function(e){ $(document).off('mousemove.drag');}
+	    })
+
+    }
+    function fwYtInfoYt(fwdata1,fwdata){//房屋用途筛选统计表   	
+    	$(".chartBoxClose3").click(function(){$(".chartBoxFrame3").addClass("hide");});
     	layui.use('table', function (header) {//统计表用途
             var table = layui.table;
             var colsListsTb=new Array(),colsListsTh=new Array();
@@ -1749,33 +2462,9 @@ function BtnF_2() {//各社区
                         
 					]
             });
+            $("#clickfw1").html('<span >房屋用途统计表</span>');
         });
-        layui.use('table', function () {//统计表地块
-            var table = layui.table;
-            var colsListsTb=new Array(),colsListsTh=new Array();
-            let colslistX=fwdata2[0];
-            let fwdataArr=fwdata.split(',');
-            colsListsTh=[{ field:"地类名称",rowspan: 2, title: "地类名称", minWidth: 100, align: "center"}]
-        	for( let x in fwdataArr){
-        		colsListsTh.push({title:fwdataArr[x], align:'center', minWidth: 100,colspan: 2});
-        	}
-        	colsListsTh.push({ field:"总计",rowspan: 1, title: "总计", minWidth: 100, align: "center",colspan: 2})
-        	for( let x in colslistX){
-        		if(x!=="地类名称" && x!=="总计"){colsListsTb.push({field:x, title:x, align:'center', minWidth: 100});}
-        	}
-            table.render({
-                elem: '#fwyt2',
-                data: fwdata2,
-//              page: true, //开启分页
-                size: 'sm', //小尺寸的表格
-                limit:40,
-                cols: [
-                        colsListsTh,
-                        colsListsTb
-					]
-            });
-        });
-        $('.sxtjFw .layui-form:nth-of-type(2)').addClass('hide');
+//      $('.sxtjFw .layui-form:nth-of-type(2)').addClass('hide');
         $('.chartBoxFrame3 .chartBoxMain').on({//信息窗口拖拽
 			mousedown: function(e){
 			                var el=$(this);
@@ -1786,25 +2475,88 @@ function BtnF_2() {//各社区
 	    })
 
     }
-    function fwYtInfo2(ytData){   	
+    function tjInfoDl(ytData,cunSqData){   	
+    	$(".chartBoxClose4").click(function(){$(".chartBoxFrame4").addClass("hide");});    	
+    	layui.use('table', function () {debugger
+            var table = layui.table;
+            var tdlxVal=$(".fwsjFormTd option:selected").val();
+            var colsListsTb=new Array(),colsListsTh=new Array();
+            let colslistX=ytData[0][0];
+            let cunSqdataArr=cunSqData.split(',');
+            colsListsTh=[{ field:"地块类型",rowspan: 2, title: "地类类型", minWidth: 100, align: "center"}]        	        	
+        	if(tdlxVal=""){
+        		for( let x in cunSqdataArr){
+        			colsListsTh.push({title:cunSqdataArr[x], align:'center', minWidth: 100,colspan: 2});
+        		}
+        		colsListsTh.push({ rowspan: 1, title: "占地面积总计", minWidth: 100, align: "center",colspan: 2})
+        		colsListsTh.push({ field:"占地面积总计",rowspan: 2, title: "总计", minWidth: 100, align: "center",colspan: 1})
+        		}
+        	for( let x in colslistX){
+        		if(x!=="地块类型" && x!=="占地面积总计"){
+        			colsListsTb.push({field:x, title:x, align:'center', minWidth: 100});
+        		}
+        	}
+            table.render({
+                elem: '#fwyt3',
+                data: ytData[0],
+//              page: true, //开启分页
+                size: 'sm', //小尺寸的表格
+                limit:50,
+                cols: [
+                        colsListsTh,
+                        colsListsTb
+					]
+            });
+            $("#dlTdLx").html('<span >地类类型统计表</span>');
+      });        
+        $('.chartBoxFrame4 .chartBoxMain').on({//信息窗口拖拽
+			mousedown: function(e){
+			                var el=$(this);
+			                var os = el.offset(); dx = e.pageX-os.left, dy = e.pageY-os.top;
+			                $(document).on('mousemove.drag', function(e){ el.offset({top: e.pageY-dy, left: e.pageX-dx}); });
+			            },
+			mouseup: function(e){ $(document).off('mousemove.drag');}
+	    })
+
+    }
+    function tjInfoTd(ytData){   	
     	$(".chartBoxClose4").click(function(){$(".chartBoxFrame4").addClass("hide");});    	
     	layui.use('table', function () {
             var table = layui.table;
+            var tdlxVal=$(".fwsjFormTd option:selected").val();
+            var sxSqMc=$(".fwsxFormSq").val(),tdlxData={};
+            var cunSqData=(sxSqMc==""?{field: 'CMC', "title": "村名称", minWidth: 100, align: "center"}:{field: 'SQMC', "title": "社区名称", minWidth: 100, align: "center"});
+            switch (tdlxVal){
+            	case "":tdlxData=[cunSqData,
+                            	 { field: 'GYTD', "title": "国有土地", align: "center" },
+                             	{ field: 'JTTD', "title": "集体土地", align: "center" },
+                             	{ field: '总计',rowspan: 2, "title": "总计",minWidth: 100 }
+                            ]
+            	break;
+        		case "国有":tdlxData=[cunSqData,{ field: 'GYTD', "title": "国有土地", align: "center" }];
+        		break;
+        		case "集体":tdlxData=[cunSqData,{ field: 'JTTD', "title": "集体土地", align: "center" }];
+        		break;
+            	default:
+            	break;
+            }
             table.render({
                 elem: '#fwyt3',
                 data: ytData,
 //              page: true, //开启分页
                 size: 'sm', //小尺寸的表格
                 limit:30,
-                cols: [
-                        [
-                         { field: 'DLMC', title: "地块名称", minWidth: 100, align: "center",rowspan: 1 },
-                         { field: 'ZDMJ', title: "占地面积", minWidth: 100, align: "center",rowspan: 1 }
-                        ]
+                cols: [tdlxData
+//                      [
+//                           cunSqData,
+//                           { field: 'GYTD', "title": "国有土地", align: "center" },
+//                           { field: 'JTTD', "title": "集体土地", align: "center" },
+//                           { field: '总计',rowspan: 2, "title": "总计",minWidth: 100 }
+//                      ]
 					]
             });
-       });
-//      $('.sxtjYt .layui-form:nth-of-type(2)').addClass('hide');debugger        
+            $("#dlTdLx").html('<span >土地类型统计表</span>');
+      });        
         $('.chartBoxFrame4 .chartBoxMain').on({//信息窗口拖拽
 			mousedown: function(e){
 			                var el=$(this);
