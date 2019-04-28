@@ -24,7 +24,7 @@ function initWebPage() {
         //this指向websocket；_userdata指向用户信息{username,password,usertoken}
         websocket = this; //接下来的websocket就用它
         initWebData();
-        if (typeof (initWebPageAfter) === "function") { initWebPageAfter(this); }debugger
+        if (typeof (initWebPageAfter) === "function") { initWebPageAfter(this); }
         topBarTool = new TopBarTool();
         chartBox = new ChartBox();
         websocket.send('JsonGetUnderspaceAllUseageOptions', $.extend({}, userData), function (response) {
@@ -75,7 +75,7 @@ function initWebData() {
     });
     //切换效果
     $("#onoffswitch_dk").bind("change", function () {
-        if (typeof (setDkLayerVisible) === "function") { setDkLayerVisible($(this).is(":checked")); }debugger
+        if (typeof (setDkLayerVisible) === "function") { setDkLayerVisible($(this).is(":checked")); }
     });
     $("#onoffswitch_fw").bind("change", function () {
         if (typeof (setFwLayerVisible) === "function") { setFwLayerVisible($(this).is(":checked")); }
@@ -86,7 +86,7 @@ function initWebData() {
     	var othis=$(this);
     	var thisData=othis.attr("data");
     	var input3=$("input[data='3']"),input4=$("input[data='4']"),input5=$("input[data='5']"),
-    	input6=$("input[data='6']")
+    	input6=$("input[data='6']"),input8=$("input[data='8']")
 		switch (thisData){
     		case "1":
     			if (typeof (setDkLayerVisible) === "function") { 
@@ -112,7 +112,7 @@ function initWebData() {
 //			}
 			break;
 			case "4":
-			if (typeof (setFwLayerVisible2) === "function") { setFwLayerVisible2($(this).is(":checked")); }debugger
+			if (typeof (setFwLayerVisible2) === "function") { setFwLayerVisible2($(this).is(":checked")); }
 //			if (typeof (setFwLayerVisible) === "function") { setDkLayerVisible2(dklayer2,dkTxtLayer2,$(this).is(":checked")); }
 			break;
 			case "5":
@@ -121,6 +121,11 @@ function initWebData() {
     		case "6":
 			if (typeof (setFwLayerVisibleFwsj) === "function") {
 				setFwLayerVisibleFwsj($(this).is(":checked"));
+			}
+			break;
+			case "8":
+			if (typeof (setFwLayerVisibleDlfb) === "function") {
+				setFwLayerVisibleDlfb($(this).is(":checked"));
 			}
 			break;
     	}    	
@@ -624,7 +629,7 @@ function LegendInfo() {
         }
     };
     function initEvent() {
-        content.node.find(".closeSpreadBox").bind("click", function () {debugger
+        content.node.find(".closeSpreadBox").bind("click", function () {
             content.hide();
             $(".legendShow").removeClass('hide');
         });
